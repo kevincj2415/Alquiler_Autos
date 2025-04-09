@@ -71,12 +71,6 @@ def registrarUsuario():
     usuario = {'nombre':nombre, 'correo':correo, 'contraseña':contraseña, 'tipo':tipo, 'pedidos':pedidos}
     usuario = Usuario(usuario)
     usuario.set_password(contraseña)
-    sql = "INSERT INTO usuarios (nombre, correo, contraseña, tipo, pedidos) VALUES (%s, %s, %s, %s, %s)"
-    datos = (nombre, correo, usuario.contraseña, tipo, pedidos)
-    conexion = mysql.connection
-    cursor = conexion.cursor()
-    cursor.execute(sql, datos)
-    conexion.commit()
     idc = generar_codigo_seguro()
     idOrga = status['idOrga']
     data = {'idc':idc, 'idOrga':idOrga, 'stockMin':0, 'stockMax':1000, 'email':"", 'sms':0, 'reabastecimiento':"Deshabilitado"}
@@ -88,14 +82,7 @@ def iniciarSesion():
     global status
     correo = request.form['email']
     contraseña = request.form['password']
-    
-    # Consulta a la base de datos
-    sql = "SELECT * FROM usuarios WHERE correo = %s"
-    datos = (correo,)
-    conexion = mysql.connection
-    cursor = conexion.cursor()
-    cursor.execute(sql, datos)
-    user = cursor.fetchone()
+    user = app.db.Usuarios.find_one({'idCreador': status['idUsuario']})
     
     # Verificar si el usuario fue encontrado
     if user is None:
