@@ -1,0 +1,10 @@
+flask
+flask-MySQLdb
+flask_migrate
+pymongo
+flask_login
+mysql-connector
+flask_sqlalchemy
+flask_mail
+requests
+reportlab
