@@ -36,7 +36,7 @@ status = {'secionIniciada' : False,
     'tipoUs' : ""
     }
 
-app = Flask(__name__)
+app = Flask(__name__, template_folder='frontend/templates', static_folder='frontend/static')
 
 cliente = MongoClient("mongodb+srv://kevincj2415:e2BhakVv76vBMD7f@cluster0.hb2dv.mongodb.net/")
 app.db = cliente.test
@@ -48,10 +48,9 @@ app.jinja_env.globals.update(generar_codigo_seguro=generar_codigo_seguro)
 def contraseñaErrada():
     return render_template('sitio/contraseñaErrada.html')
 
-@app.route('/inicio')
+@app.route('/')
 def inicio():
-    
-    return render_template('sitio/inicio.html', status=status)
+    return render_template('Inicio.html') 
 
 @app.route('/correoErrado')
 def correoErrado():

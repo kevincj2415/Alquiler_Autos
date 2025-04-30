@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>K&J - Alquiler de Autos</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='inicio.css') }}">
+    <script defer src="{{ url_for('static', filename='inicio.js') }}"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+    <header>
+        <nav class="navbar">
+            <div class="logo">K & <span>J</span></div>
+            <ul class="nav-links" id="nav-links">
+                <li><a href="#inicio">Inicio</a></li>
+                <li><a href="#info">Nosotros</a></li>
+                <li><a href="#vehiculos">Vehículos</a></li>
+                <li><a href="#opiniones">Opiniones</a></li>
+                <li><a href="#login" class="btn-login">Iniciar Sesión</a></li>
+            </ul>
+            <div class="hamburger" id="hamburger">
+                <i class="fas fa-bars"></i>
+            </div>
+        </nav>
+    </header>
+
+    <section class="hero" id="inicio">
+        <div class="hero-content">
+            <h1>Alquila tu próximo auto con <span>K&J</span></h1>
+            <p>Conduce con estilo, seguridad y confianza</p>
+            <a href="#login" class="btn">Iniciar Sesión</a>
+        </div>
+    </section>
+
+    <section class="info" id="info">
+        <h2>Sobre Nosotros</h2>
+        <p>AutoRed es una empresa colombiana con más de 10 años de experiencia en el mercado de alquiler de autos. Ofrecemos vehículos modernos, seguros y a precios competitivos. Nuestro objetivo es brindarte la mejor experiencia en movilidad.</p>
+    </section>
+
+    <section class="vehiculos" id="vehiculos">
+        <h2>Vehículos Disponibles</h2>
+        <div class="grid-vehiculos">
+            <div class="vehiculo">
+                <img src="car1.jpg" alt="Auto deportivo">
+                <h3>Deportivo</h3>
+            </div>
+            <div class="vehiculo">
+                <img src="car2.jpg" alt="SUV">
+                <h3>SUV Familiar</h3>
+            </div>
+            <div class="vehiculo">
+                <img src="car3.jpg" alt="Económico">
+                <h3>Económico</h3>
+            </div>
+        </div>
+    </section>
+
+    <section class="opiniones" id="opiniones">
+        <h2>Opiniones de Clientes</h2>
+        <div class="opiniones-grid">
+            <div class="opinion">
+                <p>"El auto estaba impecable y el servicio fue excelente. ¡Volveré a alquilar!"</p>
+                <h4>- Laura G.</h4>
+            </div>
+            <div class="opinion">
+                <p>"Excelente atención al cliente y autos muy cómodos."</p>
+                <h4>- Juan M.</h4>
+            </div>
+            <div class="opinion">
+                <p>"Rápido, fácil y confiable. Recomendado 100%."</p>
+                <h4>- Andrés T.</h4>
+            </div>
+        </div>
+    </section>
+
+    <section class="login" id="login">
+        <h2>Inicia Sesión</h2>
+        <form class="login-form">
+            <input type="email" placeholder="Correo electrónico" required>
+            <input type="password" placeholder="Contraseña" required>
+            <button type="submit">Ingresar</button>
+        </form>
+    </section>
+
+    <footer>
+        <p>&copy; 2025 AutoRed. Todos los derechos reservados.</p>
+    </footer>
+</body>
+</html>
