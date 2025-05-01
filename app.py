@@ -44,13 +44,17 @@ app.db = cliente.test
 app.jinja_env.globals.update(generar_codigo_seguro=generar_codigo_seguro)
 
 
+@app.route('/')
+def inicio():
+    return render_template('sitio/Inicio.html')
+
+@app.route('/sesion')
+def session():
+    return render_template('sitio/inicio_sesion.html') 
+
 @app.route('/contraseñaErrada')
 def contraseñaErrada():
     return render_template('sitio/contraseñaErrada.html')
-
-@app.route('/')
-def inicio():
-    return render_template('Inicio.html') 
 
 @app.route('/correoErrado')
 def correoErrado():
