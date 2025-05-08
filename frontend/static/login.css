@@ -119,4 +119,43 @@
   .register-button:hover {
     background-color: rgba(176, 6, 16, 0.9);
   }
+
+  .tipo-selector {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+  
+  .tipo-btn {
+    background-color: transparent;
+    border: 2px solid red;
+    color: white;
+    padding: 10px 20px;
+    cursor: pointer;
+    border-radius: 8px;
+    font-weight: bold;
+    transition: background-color 0.3s, color 0.3s;
+  }
+  
+  .tipo-btn.active {
+    background-color: red;
+    color: white;
+  }
+
+  .flash-messages {
+    position: absolute;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 100;
+  }
+  .alert.error {
+    background-color: #ff4d4d;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+  }
+  
+  
   

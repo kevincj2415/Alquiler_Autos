@@ -58,17 +58,18 @@ def sesion():
 def registro():
     return render_template('sitio/registro.html')
 
-@app.route('/contraseñaErrada')
-def contraseñaErrada():
-    return render_template('sitio/contraseñaErrada.html')
-
-@app.route('/correoErrado')
-def correoErrado():
-    return render_template('sitio/correoErrado.html')
 
 @app.route('/registrarUsuario')
 def registroUsuario():
     return render_template('sitio/RegistroUsuario.html')
+
+@app.route('/panelSocio')
+def PanelSocio():
+    global status
+    if status['secionIniciada'] == True:
+        return render_template('control/panel_socio.html')
+    else:
+        return redirect(url_for('registro'))
 
 @app.route('/sitio/registrarUsuario', methods = ['POST'])
 def registrarUsuario():
@@ -81,10 +82,24 @@ def registrarUsuario():
         flash('Las contraseñas no coinciden', 'error')
         return redirect(url_for('registro'))
     
+    correo_usuario =  app.db.Users.find_one({'correo': correo})
+    correo_socio = app.db.Socios.find_one({'correo': correo})
+    
+    if correo_socio:
+        flash('El correo ya se encuentra registrado como socio', 'error')
+        return redirect(url_for('registro'))
+    elif correo_usuario:
+        flash('El correo ya se encuentra registrado como usuario', 'error')
+        return redirect(url_for('registro'))
+    
     if tipo_usuario == "socio":
         tipo_documento = request.form['tipo_documento']
         numero_documento = request.form['numero_documento']
         direccion = request.form['direccion']
+        nd = app.db.Socios.find_one({'numero_documento': numero_documento})
+        if nd:
+            flash('El numero de documento ya se encuentra registrado', 'error')
+            return redirect(url_for('registro'))
         socio = {'nombre':nombre, 'correo':correo, 'contraseña':contraseña, 'direccion': direccion,'tipo_documento': tipo_documento, 'numero_documento':numero_documento}
         socio = Socio(socio)
         passw = socio.set_password(contraseña)
@@ -104,35 +119,58 @@ def registrarUsuario():
 @app.route('/sitio/iniciarSesion', methods = ['POST'])
 def iniciarSesion():
     global status
-    correo = request.form['email']
-    contraseña = request.form['password']
-    user = app.db.Usuarios.find_one({'idCreador': status['idUsuario']})
+    tipo_usuario = request.form['tipo_usuario']
+    correo = request.form['correo']
+    contraseña = request.form['contraseña']
     
-    # Verificar si el usuario fue encontrado
-    if user is None:
-        return redirect('/correoErrado')
+    
+    if tipo_usuario == "socio":
+        user = app.db.Socios.find_one({'correo': correo})
+    
+        # Verificar si el usuario fue encontrado
+        if user is None:
+            flash('No se encontro el socio, intente nuevamente', 'error')
+            return redirect('/sesion')
 
-    # Crear objeto Usuario
-    usuario = Usuario(user)
-    
-    # Verificar si la contraseña es correcta
-    if not usuario.check_password(contraseña):
-        return redirect('/contraseñaErrada')
-    else:
-    # Si la contraseña es correcta iniciar secion
-        status['secionIniciada'] = True
-        status['idUsuario'] = user['ID']
-        status['nombre'] = usuario.nombre
-        status['correo'] = usuario.correo
-        status['tipo'] = usuario.tipo
-        status['pedidos'] = usuario.pedidos
-        com = app.db.Comunidad.find_one({'idCreador': status['idUsuario']})
-        if com != None:
-            status['idOrga'] = com['ido']
+        # Crear objeto Usuario
+        socio = Socio(user)
+        
+        # Verificar si la contraseña es correcta
+        if not socio.check_password(contraseña):
+            flash('Contraseña incorrecta', 'error')
+            return redirect('/sesion')
         else:
-            status['idOrga'] = ''
-        print(status['idOrga'])
-        return redirect('/inventario')
+        # Si la contraseña es correcta iniciar secion
+            status['secionIniciada'] = True
+            status['idUsuario'] = user['idc']
+            status['nombre'] = socio.nombre
+            status['correo'] = socio.correo
+            status['tipo'] = "socio"
+            return redirect('/panelSocio')
+        
+    elif tipo_usuario == "usuario":
+        user = app.db.Users.find_one({'correo': correo})
+        
+        if user is None:
+            flash('No se encontro el usuario, intente nuevamente', 'error')
+            return redirect('/sesion')
+
+        # Crear objeto Usuario
+        usuario = Usuario(user)
+        
+        # Verificar si la contraseña es correcta
+        if not usuario.check_password(contraseña):
+            flash('Contraseña incorrecta', 'error')
+            return redirect('/sesion')
+        else:
+        # Si la contraseña es correcta iniciar secion
+            status['secionIniciada'] = True
+            status['idUsuario'] = user['idc']
+            status['nombre'] = usuario.nombre
+            status['correo'] = usuario.correo
+            status['tipo'] = "usuario"
+            return redirect('/inicio')
+        
 
 
 

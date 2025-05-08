@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Iniciar Sesión - AutoRed</title>
+  <title>Iniciar Sesión - K&J </title>
   <link rel="stylesheet" href="{{ url_for('static', filename='login.css') }}">
   <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;600;800&display=swap" rel="stylesheet">
 </head>
@@ -15,17 +15,52 @@
     </video>
   </div>
 
-  <!-- Botón para volver al inicio -->
   <a href="{{ url_for('inicio') }}" class="back-button">⟵ Volver</a>
-  <a href="{{ url_for('registro') }}" class="register-button">⟵ registrarse</a>
+  <a href="{{ url_for('registro') }}" class="register-button">Registrarse</a>
 
   <div class="login-container">
     <h1>Bienvenido a <span>K & J</span></h1>
-    <form class="login-form">
-      <input type="email" placeholder="Correo electrónico" required>
-      <input type="password" placeholder="Contraseña" required>
+
+    <!-- Selector de tipo -->
+    <div class="tipo-selector">
+      <button type="button" class="tipo-btn active" id="btn-usuario">Usuario</button>
+      <button type="button" class="tipo-btn" id="btn-socio">Socio</button>
+    </div>
+
+    <form class="login-form" action="/sitio/iniciarSesion" method="post">
+      <input type="hidden" name="tipo_usuario" id="tipo_usuario" value="usuario">
+      <input type="email" placeholder="Correo electrónico" name="correo" required>
+      <input type="password" placeholder="Contraseña" name="contraseña" required>
       <button type="submit">Iniciar Sesión</button>
     </form>
   </div>
+
+  {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div class="flash-messages">
+          {% for category, message in messages %}
+            <div class="alert {{ category }}">{{ message }}</div>
+          {% endfor %}
+        </div>
+      {% endif %}
+  {% endwith %}
+
+  <script>
+    const btnUsuario = document.getElementById('btn-usuario');
+    const btnSocio = document.getElementById('btn-socio');
+    const inputTipo = document.getElementById('tipo_usuario');
+
+    btnUsuario.addEventListener('click', () => {
+      inputTipo.value = 'usuario';
+      btnUsuario.classList.add('active');
+      btnSocio.classList.remove('active');
+    });
+
+    btnSocio.addEventListener('click', () => {
+      inputTipo.value = 'socio';
+      btnSocio.classList.add('active');
+      btnUsuario.classList.remove('active');
+    });
+  </script>
 </body>
 </html>
