@@ -6,6 +6,7 @@ from flask_migrate import Migrate
 from flask_mysqldb import MySQL
 from werkzeug.security import generate_password_hash, check_password_hash
 from Usuario import Usuario
+from Socio import Socio
 from pymongo import MongoClient
 import datetime
 import io
@@ -37,9 +38,10 @@ status = {'secionIniciada' : False,
     }
 
 app = Flask(__name__, template_folder='frontend/templates', static_folder='frontend/static')
+app.secret_key = 'kevin_jairo'
 
 cliente = MongoClient("mongodb+srv://kevincj2415:e2BhakVv76vBMD7f@cluster0.hb2dv.mongodb.net/")
-app.db = cliente.test
+app.db = cliente.alquiler_coches
 
 app.jinja_env.globals.update(generar_codigo_seguro=generar_codigo_seguro)
 
@@ -49,8 +51,12 @@ def inicio():
     return render_template('sitio/Inicio.html')
 
 @app.route('/sesion')
-def session():
+def sesion():
     return render_template('sitio/inicio_sesion.html') 
+
+@app.route('/registro')
+def registro():
+    return render_template('sitio/registro.html')
 
 @app.route('/contraseñaErrada')
 def contraseñaErrada():
@@ -66,19 +72,34 @@ def registroUsuario():
 
 @app.route('/sitio/registrarUsuario', methods = ['POST'])
 def registrarUsuario():
+    tipo_usuario = request.form['tipo_usuario']
     nombre = request.form['nombre']
     correo = request.form['correo']
-    contraseña = request.form['contraseña']
-    tipo = request.form['tipo']
-    pedidos = 0
-    usuario = {'nombre':nombre, 'correo':correo, 'contraseña':contraseña, 'tipo':tipo, 'pedidos':pedidos}
-    usuario = Usuario(usuario)
-    usuario.set_password(contraseña)
-    idc = generar_codigo_seguro()
-    idOrga = status['idOrga']
-    data = {'idc':idc, 'idOrga':idOrga, 'stockMin':0, 'stockMax':1000, 'email':"", 'sms':0, 'reabastecimiento':"Deshabilitado"}
-    app.db.configuracion.insert_one(data)
-    return redirect('/inicioSesion')
+    contraseña = request.form['contraseña1']
+    confirmacion = request.form['contraseña2']
+    if contraseña != confirmacion:
+        flash('Las contraseñas no coinciden', 'error')
+        return redirect(url_for('registro'))
+    
+    if tipo_usuario == "socio":
+        tipo_documento = request.form['tipo_documento']
+        numero_documento = request.form['numero_documento']
+        direccion = request.form['direccion']
+        socio = {'nombre':nombre, 'correo':correo, 'contraseña':contraseña, 'direccion': direccion,'tipo_documento': tipo_documento, 'numero_documento':numero_documento}
+        socio = Socio(socio)
+        passw = socio.set_password(contraseña)
+        idc = generar_codigo_seguro()
+        data = {'idc':idc, 'nombre':nombre, 'correo':correo, 'contraseña':passw, 'direccion': direccion,'tipo_documento': tipo_documento, 'numero_documento':numero_documento, 'tipo_usuario': tipo_usuario}
+        app.db.Socios.insert_one(data)
+        return redirect('/')
+    else:
+        usuario = {'nombre':nombre, 'correo':correo, 'contraseña':contraseña}
+        usuario = Usuario(usuario)
+        passw = usuario.set_password(contraseña)
+        idc = generar_codigo_seguro()
+        data = {'idc':idc, 'nombre':nombre, 'correo':correo, 'contraseña':passw, 'tipo_usuario': tipo_usuario}
+        app.db.Users.insert_one(data)
+        return redirect('/')
     
 @app.route('/sitio/iniciarSesion', methods = ['POST'])
 def iniciarSesion():

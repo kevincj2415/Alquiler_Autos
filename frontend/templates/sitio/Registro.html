@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Registro - AutoRed</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='registro.css') }}"/>
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;600;800&display=swap" rel="stylesheet"/>
+</head>
+<body>
+  <div class="video-background">
+    <video autoplay muted loop>
+      <source src="{{ url_for('static', filename='public/fondo_carros.mp4') }}" type="video/mp4">
+      Tu navegador no soporta videos HTML5.
+    </video>
+  </div>
+
+  <a href="{{ url_for('inicio') }}" class="back-button">⟵ Volver al inicio</a>
+  <a href="{{ url_for('sesion') }}" class="login-button">Iniciar sesión ➡️</a>
+
+  <div class="register-container">
+    <h1>Crea tu cuenta en <span>K&J</span></h1>
+
+    <div class="tipo-selector">
+      <button type="button" class="tipo-btn active" id="btn-usuario">Usuario</button>
+      <button type="button" class="tipo-btn" id="btn-socio">Socio</button>
+    </div>
+
+    <form class="register-form" action="/sitio/registrarUsuario" method="post">
+      <input type="hidden" name="tipo_usuario" id="tipo_usuario" value="usuario">
+
+      <input type="text" placeholder="Nombre completo" name="nombre" required>
+      <input type="email" placeholder="Correo electrónico" name="correo" required>
+      <input type="password" placeholder="Contraseña" name="contraseña1" required>
+      <input type="password" placeholder="Confirmar contraseña" name="contraseña2" required>
+
+      <div id="campos-socio" style="display: none;">
+        <input type="text" placeholder="Dirección" name="direccion">
+        
+        <select name="tipo_documento">
+          <option value="">Tipo de documento</option>
+          <option value="cc">Cédula de ciudadanía</option>
+          <option value="ce">Cédula de extranjería</option>
+          <option value="pasaporte">Pasaporte</option>
+          <option value="nit">NIT</option>
+        </select>
+        
+        <input type="text" placeholder="Número de documento" name="numero_documento">
+      </div>
+
+      <button type="submit">Registrarse</button>
+    </form>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div class="flash-messages">
+          {% for category, message in messages %}
+            <div class="alert {{ category }}">{{ message }}</div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+  </div>
+
+  <script defer src="{{ url_for('static', filename='registro.js') }}"></script>
+</body>
+</html>

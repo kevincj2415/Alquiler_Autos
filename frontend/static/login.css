@@ -101,4 +101,22 @@
   .back-button:hover {
     background-color: rgba(176, 6, 16, 0.9);
   }
+
+  .register-button {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background-color: rgba(229, 9, 20, 0.8);
+    color: white;
+    padding: 10px 16px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+    z-index: 2;
+  }
+  
+  .register-button:hover {
+    background-color: rgba(176, 6, 16, 0.9);
+  }
   
