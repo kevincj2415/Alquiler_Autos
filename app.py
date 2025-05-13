@@ -1,21 +1,15 @@
-from flask import Flask, jsonify, render_template, request, redirect, url_for, flash,session, send_file
-from flask_sqlalchemy import SQLAlchemy
-from flask_login import LoginManager, login_user, current_user, logout_user, login_required
-from flask_mail import Mail, Message
-from flask_migrate import Migrate
-from flask_mysqldb import MySQL
+from flask import Flask, jsonify, render_template, request, redirect, url_for, flash, session, send_file
 from werkzeug.security import generate_password_hash, check_password_hash
+from flask_login import LoginManager, UserMixin, login_user, current_user, logout_user, login_required
+from pymongo import MongoClient
+from functools import wraps
 from Usuario import Usuario
 from Socio import Socio
-from pymongo import MongoClient
+from config import Config
 import datetime
 import io
 from reportlab.lib.pagesizes import letter
 from reportlab.pdfgen import canvas
-import mysql.connector
-import datetime
-import requests
-
 import secrets
 import string
 
@@ -23,33 +17,61 @@ def generar_codigo_seguro(longitud=6):
     caracteres = string.ascii_letters + string.digits
     return ''.join(secrets.choice(caracteres) for _ in range(longitud))
 
-
-PIXABAY_API_KEY = "47289007-1c84d3d414f613c857c6ded8f"
 BASE_URL = "https://api.pexels.com/v1/search"
 
-status = {'secionIniciada' : False,
-    'nombre' : "",
-    "correo" : "",
-    "tipo" : "",
-    'pedidos' : 0,
-    'idUsuario' : 0,
-    'tipoUs' : "",
-    'imagen': ""
-    }
-
 app = Flask(__name__, template_folder='frontend/templates', static_folder='frontend/static')
-app.secret_key = 'kevin_jairo'
+app.config.from_object(Config)
 
-cliente = MongoClient("mongodb+srv://kevincj2415:e2BhakVv76vBMD7f@cluster0.hb2dv.mongodb.net/")
+# Configuración de Flask-Login
+login_manager = LoginManager()
+login_manager.init_app(app)
+login_manager.login_view = 'sesion'
+
+# Conexión a MongoDB usando la configuración
+cliente = MongoClient(app.config['MONGODB_URI'])
 app.db = cliente.alquiler_coches
+
+# Clase para manejar usuarios en Flask-Login
+class User(UserMixin):
+    def __init__(self, user_data):
+        self.id = str(user_data['idc'])
+        self.nombre = user_data['nombre']
+        self.correo = user_data['correo']
+        self.tipo = user_data['tipo_usuario']
+        self.imagen = user_data.get('imagen', 'usuario.png')
+
+@login_manager.user_loader
+def load_user(user_id):
+    user_data = app.db.Users.find_one({'idc': user_id}) or app.db.Socios.find_one({'idc': user_id})
+    if user_data:
+        return User(user_data)
+    return None
+
+# Decorador personalizado para verificar el tipo de usuario
+def tipo_required(tipo):
+    def decorator(f):
+        @wraps(f)
+        def decorated_function(*args, **kwargs):
+            if not current_user.is_authenticated or current_user.tipo != tipo:
+                flash('No tienes permiso para acceder a esta página', 'error')
+                return redirect(url_for('inicio'))
+            return f(*args, **kwargs)
+        return decorated_function
+    return decorator
 
 app.jinja_env.globals.update(generar_codigo_seguro=generar_codigo_seguro)
 
-
 @app.route('/')
 def inicio():
-    global status
-    return render_template('sitio/Inicio.html', status=status)
+    return render_template('sitio/Inicio.html', status={
+        'secionIniciada': current_user.is_authenticated,
+        'nombre': current_user.nombre if current_user.is_authenticated else '',
+        'correo': current_user.correo if current_user.is_authenticated else '',
+        'tipo': current_user.tipo if current_user.is_authenticated else '',
+        'imagen': current_user.imagen if current_user.is_authenticated else 'usuario.png',
+        'idUsuario': current_user.id if current_user.is_authenticated else 0,
+        'pedidos': 0
+    })
 
 @app.route('/sesion')
 def sesion():
@@ -59,18 +81,15 @@ def sesion():
 def registro():
     return render_template('sitio/registro.html')
 
-
 @app.route('/registrarUsuario')
 def registroUsuario():
     return render_template('sitio/RegistroUsuario.html')
 
 @app.route('/panelSocio')
+@login_required
+@tipo_required('socio')
 def PanelSocio():
-    global status
-    if status['secionIniciada'] == True:
-        return render_template('control/panel_socio.html')
-    else:
-        return redirect(url_for('registro'))
+    return render_template('control/panel_socio.html')
 
 @app.route('/sitio/registrarUsuario', methods = ['POST'])
 def registrarUsuario():
@@ -107,7 +126,7 @@ def registrarUsuario():
         idc = generar_codigo_seguro()
         data = {'idc':idc, 'nombre':nombre, 'correo':correo, 'contraseña':passw, 'direccion': direccion,'tipo_documento': tipo_documento, 'numero_documento':numero_documento, 'tipo_usuario': tipo_usuario, 'imagen_perfil': "usuario.png"}
         app.db.Socios.insert_one(data)
-        return redirect('/')
+        return redirect('/sesion')
     else:
         usuario = {'nombre':nombre, 'correo':correo, 'contraseña':contraseña, 'imagen':"usuario.png"}
         usuario = Usuario(usuario)
@@ -115,96 +134,102 @@ def registrarUsuario():
         idc = generar_codigo_seguro()
         data = {'idc':idc, 'nombre':nombre, 'correo':correo, 'contraseña':passw, 'tipo_usuario': tipo_usuario, 'imagen':"usuario.png"}
         app.db.Users.insert_one(data)
-        return redirect('/')
+        return redirect('/sesion')
     
-@app.route('/sitio/iniciarSesion', methods = ['POST'])
+@app.route('/sitio/iniciarSesion', methods=['POST'])
 def iniciarSesion():
-    global status
-    tipo_usuario = request.form['tipo_usuario']
-    correo = request.form['correo']
-    contraseña = request.form['contraseña']
-    
-    
-    if tipo_usuario == "socio":
-        user = app.db.Socios.find_one({'correo': correo})
-    
-        # Verificar si el usuario fue encontrado
-        if user is None:
-            flash('No se encontro el socio, intente nuevamente', 'error')
-            return redirect('/sesion')
-
-        # Crear objeto Usuario
-        socio = Socio(user)
+    try:
+        tipo_usuario = request.form['tipo_usuario']
+        correo = request.form['correo']
+        contraseña = request.form['contraseña']
         
-        # Verificar si la contraseña es correcta
-        if not socio.check_password(contraseña):
-            flash('Contraseña incorrecta', 'error')
-            return redirect('/sesion')
-        else:
-        # Si la contraseña es correcta iniciar secion
-            status['secionIniciada'] = True
-            status['idUsuario'] = user['idc']
-            status['nombre'] = socio.nombre
-            status['correo'] = socio.correo
-            status['tipo'] = "socio"
-            status['imagen'] = socio.imagen
+        if tipo_usuario == "socio":
+            user_data = app.db.Socios.find_one({'correo': correo})
+            if user_data is None:
+                flash('No se encontró el socio, intente nuevamente', 'error')
+                return redirect('/sesion')
+            
+            socio = Socio(user_data)
+            if not socio.check_password(contraseña):
+                flash('Contraseña incorrecta', 'error')
+                return redirect('/sesion')
+                
+            user = User(user_data)
+            login_user(user)
             return redirect('/panelSocio')
-        
-    elif tipo_usuario == "usuario":
-        user = app.db.Users.find_one({'correo': correo})
-        
-        if user is None:
-            flash('No se encontro el usuario, intente nuevamente', 'error')
-            return redirect('/sesion')
-
-        # Crear objeto Usuario
-        usuario = Usuario(user)
-        
-        # Verificar si la contraseña es correcta
-        if not usuario.check_password(contraseña):
-            flash('Contraseña incorrecta', 'error')
-            return redirect('/sesion')
-        else:
-        # Si la contraseña es correcta iniciar secion
-            status['secionIniciada'] = True
-            status['idUsuario'] = user['idc']
-            status['nombre'] = usuario.nombre
-            status['correo'] = usuario.correo
-            status['tipo'] = "usuario"
-            status['imagen'] = usuario.imagen
-            print(status['imagen'])
+            
+        elif tipo_usuario == "usuario":
+            user_data = app.db.Users.find_one({'correo': correo})
+            if user_data is None:
+                flash('No se encontró el usuario, intente nuevamente', 'error')
+                return redirect('/sesion')
+            
+            usuario = Usuario(user_data)
+            if not usuario.check_password(contraseña):
+                flash('Contraseña incorrecta', 'error')
+                return redirect('/sesion')
+                
+            user = User(user_data)
+            login_user(user)
             return redirect('/')
+            
+    except Exception as e:
+        flash('Error al iniciar sesión. Por favor, intente nuevamente.', 'error')
+        return redirect('/sesion')
         
 @app.route('/cerrarSesion')
+@login_required
 def cerrarSesion():
-    global status
-    status = {'secionIniciada' : False,
-    'nombre' : "",
-    "correo" : "",
-    "tipo" : "",
-    'pedidos' : 0,
-    'idUsuario' : 0,
-    'tipoUs' : "",
-    'imagen': ""
-    }
+    logout_user()
     return redirect('/')
 
 @app.route('/mis_carros')
+@login_required
+@tipo_required('socio')
 def mis_carros():
-    mis_carros = [carro for carro in app.db.Carros.find({"idSocio": status['idUsuario']})]
-    return render_template('/control/mis_carros.html', mis_carros=mis_carros)
+    try:
+        mis_carros = [carro for carro in app.db.Carros.find({"idSocio": current_user.id})]
+        return render_template('/control/mis_carros.html', mis_carros=mis_carros)
+    except Exception as e:
+        flash('Error al cargar los carros', 'error')
+        return redirect(url_for('inicio'))
 
-@app.route('/control/registrarCarro', methods = ['POST'])
+@app.route('/control/registrarCarro', methods=['POST'])
+@login_required
+@tipo_required('socio')
 def registrarCarro():
-    nombre = request.form['nombre']
-    tipo = request.form['tipo']
-    placa = request.form['placa']
-    año = request.form['año']
-    color = request.form['color']
-    ubicacion = request.form['ubicacion']
-    data = {'idSocio':status['idUsuario'], 'nombre':nombre, 'tipo':tipo, 'placa': placa, 'año':año, 'color':color, 'ubicacion':ubicacion, 'ingresos':int(0), 'imagen':""}
-    app.db.Carros.insert_one(data)
-    return redirect('/mis_carros')
+    try:
+        nombre = request.form['nombre']
+        tipo = request.form['tipo']
+        placa = request.form['placa']
+        año = request.form['año']
+        color = request.form['color']
+        ubicacion = request.form['ubicacion']
+        imagen = request.form['imagenes']
+        
+        # Verificar si la placa ya existe
+        carro_existente = app.db.Carros.find_one({'placa': placa})
+        if carro_existente:
+            flash('Ya existe un carro registrado con esa placa', 'error')
+            return redirect('/mis_carros')
+            
+        data = {
+            'idSocio': current_user.id,
+            'nombre': nombre,
+            'tipo': tipo,
+            'placa': placa,
+            'año': año,
+            'color': color,
+            'ubicacion': ubicacion,
+            'ingresos': int(0),
+            'imagen': imagen
+        }
+        app.db.Carros.insert_one(data)
+        flash('Carro registrado exitosamente', 'success')
+        return redirect('/mis_carros')
+    except Exception as e:
+        flash('Error al registrar el carro', 'error')
+        return redirect('/mis_carros')
 
 
 
