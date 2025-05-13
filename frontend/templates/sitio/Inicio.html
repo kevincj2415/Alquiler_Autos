@@ -32,6 +32,7 @@
                         <li><a href="/sesion" class="btn-login">Iniciar Sesión</a></li>
                     {%else%}
                         <img id="imagen-usuario" src="{{ url_for('static', filename='public/usuarios/' + status['imagen']) }}" alt="Usuario">
+                        <li><a href="/cerrarSesion" class="btn-login">Cerrar Sesión</a></li>
                     {%endif%}
 
                 </ul>

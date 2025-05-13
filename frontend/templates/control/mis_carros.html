@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Mis Carros - Socio</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='mis_carros.css') }}">
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;600;800&display=swap" rel="stylesheet"/>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="logo">K&J</div>
+    <ul class="nav-links">
+      <li><a href="{{ url_for('PanelSocio') }}">Inicio</a></li>
+      <li><a href="{{ url_for('mis_carros') }}" class="active">Mis Carros</a></li>
+      <li><a href="{{ url_for('PanelSocio') }}">Mis Reservas</a></li>
+      <li><a href="{{ url_for('PanelSocio') }}">Mis Ganancias</a></li>
+      <li><a href="{{ url_for('PanelSocio') }}">Opciones</a></li>
+      <li><a href="{{ url_for('cerrarSesion') }}" class="logout">Cerrar sesión</a></li>
+    </ul>
+    <div class="menu-toggle">&#9776;</div>
+  </nav>
+
+  <!-- Contenido principal -->
+  <main class="contenido">
+    <h1>Mis Vehículos</h1>
+    <p>Gestiona tus autos disponibles para alquiler, visualiza su rendimiento y mantén todo en orden.</p>
+
+    <!-- Botón para añadir carro -->
+    <button id="btn-abrir-formulario" class="btn-agregar-carro">+ Añadir Carro</button>
+
+    <!-- Modal con formulario -->
+    <div id="modal-formulario" class="modal">
+      <div class="modal-contenido">
+        <span class="cerrar-modal">&times;</span>
+        <h2>Registrar Nuevo Vehículo</h2>
+        <form id="form-registro-carro" action="/control/registrarCarro" method="POST" enctype="multipart/form-data">
+          <label for="nombre">Nombre o modelo del carro:</label>
+          <input type="text" name="nombre" required>
+
+          <label for="tipo">Tipo de vehículo:</label>
+          <select name="tipo" required>
+            <option value="">Selecciona uno</option>
+            <option value="Sedán">Sedán</option>
+            <option value="SUV">SUV</option>
+            <option value="Pickup">Pickup</option>
+            <option value="Camioneta">Camioneta</option>
+            <option value="Deportivo">Deportivo</option>
+          </select>
+
+          <label for="placa">Placa:</label>
+          <input type="text" name="placa" required>
+
+          <label for="año">Año:</label>
+          <input type="number" name="año" min="1990" max="2030" required>
+
+          <label for="color">Color:</label>
+          <input type="text" name="color" required>
+
+          <label for="ubicacion">Ubicación:</label>
+          <input type="text" name="ubicacion" required>
+
+          <label for="imagenes">Fotos del carro:</label>
+          <input type="file" name="imagenes" accept="image/*" multiple required>
+
+          <button type="submit">Registrar Carro</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Contenedor Único Fuera del Loop -->
+    <div class="carros-container">
+      {% for carro in mis_carros %}
+        <div class="car-card">
+          <!-- Imagen Dinámica -->
+          <img src="{{ url_for('static', filename='public/' + carro.imagen) }}" alt="{{ carro.nombre }}">
+          <div class="car-info">
+            <h2>{{ carro.nombre }}</h2>
+            <p>{{ carro.año }} | {{ carro.color }}</p>
+            <p><strong>Ingresos:</strong> ${{ carro.ingresos }} COP</p>
+            <button class="ver-detalles">Ver Detalles</button>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </main>
+
+  <script defer src="{{ url_for('static', filename='mis_carros.js') }}"></script>
+  <script src="https://unpkg.com/scrollreveal@4.0.7/dist/scrollreveal.min.js"></script>
+</body>
+</html>

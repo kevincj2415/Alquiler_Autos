@@ -188,7 +188,23 @@ def cerrarSesion():
     'imagen': ""
     }
     return redirect('/')
-        
+
+@app.route('/mis_carros')
+def mis_carros():
+    mis_carros = [carro for carro in app.db.Carros.find({"idSocio": status['idUsuario']})]
+    return render_template('/control/mis_carros.html', mis_carros=mis_carros)
+
+@app.route('/control/registrarCarro', methods = ['POST'])
+def registrarCarro():
+    nombre = request.form['nombre']
+    tipo = request.form['tipo']
+    placa = request.form['placa']
+    año = request.form['año']
+    color = request.form['color']
+    ubicacion = request.form['ubicacion']
+    data = {'idSocio':status['idUsuario'], 'nombre':nombre, 'tipo':tipo, 'placa': placa, 'año':año, 'color':color, 'ubicacion':ubicacion, 'ingresos':int(0), 'imagen':""}
+    app.db.Carros.insert_one(data)
+    return redirect('/mis_carros')
 
 
 
