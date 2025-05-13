@@ -33,8 +33,8 @@ status = {'secionIniciada' : False,
     "tipo" : "",
     'pedidos' : 0,
     'idUsuario' : 0,
-    'idOrga' : "",
-    'tipoUs' : ""
+    'tipoUs' : "",
+    'imagen': ""
     }
 
 app = Flask(__name__, template_folder='frontend/templates', static_folder='frontend/static')
@@ -48,7 +48,8 @@ app.jinja_env.globals.update(generar_codigo_seguro=generar_codigo_seguro)
 
 @app.route('/')
 def inicio():
-    return render_template('sitio/Inicio.html')
+    global status
+    return render_template('sitio/Inicio.html', status=status)
 
 @app.route('/sesion')
 def sesion():
@@ -100,19 +101,19 @@ def registrarUsuario():
         if nd:
             flash('El numero de documento ya se encuentra registrado', 'error')
             return redirect(url_for('registro'))
-        socio = {'nombre':nombre, 'correo':correo, 'contraseña':contraseña, 'direccion': direccion,'tipo_documento': tipo_documento, 'numero_documento':numero_documento}
+        socio = {'nombre':nombre, 'correo':correo, 'contraseña':contraseña, 'direccion': direccion,'tipo_documento': tipo_documento, 'numero_documento':numero_documento, 'imagen_perfil': "usuario.png"}
         socio = Socio(socio)
         passw = socio.set_password(contraseña)
         idc = generar_codigo_seguro()
-        data = {'idc':idc, 'nombre':nombre, 'correo':correo, 'contraseña':passw, 'direccion': direccion,'tipo_documento': tipo_documento, 'numero_documento':numero_documento, 'tipo_usuario': tipo_usuario}
+        data = {'idc':idc, 'nombre':nombre, 'correo':correo, 'contraseña':passw, 'direccion': direccion,'tipo_documento': tipo_documento, 'numero_documento':numero_documento, 'tipo_usuario': tipo_usuario, 'imagen_perfil': "usuario.png"}
         app.db.Socios.insert_one(data)
         return redirect('/')
     else:
-        usuario = {'nombre':nombre, 'correo':correo, 'contraseña':contraseña}
+        usuario = {'nombre':nombre, 'correo':correo, 'contraseña':contraseña, 'imagen':"usuario.png"}
         usuario = Usuario(usuario)
         passw = usuario.set_password(contraseña)
         idc = generar_codigo_seguro()
-        data = {'idc':idc, 'nombre':nombre, 'correo':correo, 'contraseña':passw, 'tipo_usuario': tipo_usuario}
+        data = {'idc':idc, 'nombre':nombre, 'correo':correo, 'contraseña':passw, 'tipo_usuario': tipo_usuario, 'imagen':"usuario.png"}
         app.db.Users.insert_one(data)
         return redirect('/')
     
@@ -146,6 +147,7 @@ def iniciarSesion():
             status['nombre'] = socio.nombre
             status['correo'] = socio.correo
             status['tipo'] = "socio"
+            status['imagen'] = socio.imagen
             return redirect('/panelSocio')
         
     elif tipo_usuario == "usuario":
@@ -169,7 +171,23 @@ def iniciarSesion():
             status['nombre'] = usuario.nombre
             status['correo'] = usuario.correo
             status['tipo'] = "usuario"
-            return redirect('/inicio')
+            status['imagen'] = usuario.imagen
+            print(status['imagen'])
+            return redirect('/')
+        
+@app.route('/cerrarSesion')
+def cerrarSesion():
+    global status
+    status = {'secionIniciada' : False,
+    'nombre' : "",
+    "correo" : "",
+    "tipo" : "",
+    'pedidos' : 0,
+    'idUsuario' : 0,
+    'tipoUs' : "",
+    'imagen': ""
+    }
+    return redirect('/')
         
 
 

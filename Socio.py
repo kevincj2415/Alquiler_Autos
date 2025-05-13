@@ -11,6 +11,7 @@ class Socio(UserMixin):
         self.direccion = socio.get('direccion', '')
         self.numero_documento = socio.get('numero_documento')
         self.tipo_documento = socio.get('tipo_documento')
+        self.imagen = socio.get('imagen', "")
         
     def set_password(self, password):
         self.contraseña = generate_password_hash(password)

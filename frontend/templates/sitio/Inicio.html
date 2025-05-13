@@ -28,7 +28,12 @@
                     <li><a href="#info">Nosotros</a></li>
                     <li><a href="#vehiculos">Vehículos</a></li>
                     <li><a href="#opiniones">Opiniones</a></li>
-                    <li><a href="/sesion" class="btn-login">Iniciar Sesión</a></li>
+                    {% if status['secionIniciada'] == False %}
+                        <li><a href="/sesion" class="btn-login">Iniciar Sesión</a></li>
+                    {%else%}
+                        <img id="imagen-usuario" src="{{ url_for('static', filename='public/usuarios/' + status['imagen']) }}" alt="Usuario">
+                    {%endif%}
+
                 </ul>
                 <div class="hamburger" id="hamburger">
                     <i class="fas fa-bars"></i>
@@ -40,7 +45,7 @@
             <div class="hero-content">
                 <h1>Alquila tu próximo auto con <span>K&J</span></h1>
                 <p>Conduce con estilo, seguridad y confianza</p>
-                <a href="#login" class="btn">Iniciar Sesión</a>
+                <a href="/sesion" class="btn">Iniciar Sesión</a>
             </div>
         </section>
 

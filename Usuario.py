@@ -8,6 +8,7 @@ class Usuario(UserMixin):
         self.nombre = usuario.get('nombre', '')
         self.correo = usuario.get('correo', '')
         self.contraseña = usuario.get('contraseña', '')
+        self.imagen = usuario.get('imagen', '')
         
     def set_password(self, password):
         self.contraseña = generate_password_hash(password)
