@@ -1,105 +1,99 @@
-body {
+/* General Styles */
+* {
     margin: 0;
+    padding: 0;
+    box-sizing: border-box;
     font-family: 'Rubik', sans-serif;
-    background-color: #111;
-    color: white;
-  }
-  
-  .navbar {
-    background-color: #1c1c1c;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 15px 30px;
-    position: relative;
-  }
-  
-  .logo {
-    font-size: 24px;
-    font-weight: 800;
-    color: red;
-  }
-  
-  .nav-links {
-    list-style: none;
-    display: flex;
-    gap: 20px;
-  }
-  
-  .nav-links li a {
-    text-decoration: none;
-    color: white;
-    font-weight: 600;
-    transition: color 0.3s;
-  }
-  
-  .nav-links li a:hover {
-    color: red;
-  }
-  
-  .logout {
-    background-color: red;
-    padding: 8px 15px;
-    border-radius: 8px;
-    color: white !important;
-  }
-  
-  .menu-toggle {
-    display: none;
-    font-size: 28px;
-    color: white;
-    cursor: pointer;
-  }
-  
-  .contenido {
-    padding: 40px;
-    max-width: 800px;
-    margin: auto;
-  }
-  
-  .contenido h1 {
-    font-size: 36px;
-    color: red;
-    margin-bottom: 10px;
-  }
-  
-  .contenido p, .contenido li {
-    font-size: 18px;
+}
+
+body {
+    background-color: #0d0d0d;
+    color: #fff;
     line-height: 1.6;
-  }
-  
-  .contenido ul {
-    margin-top: 10px;
-    margin-bottom: 20px;
-  }
-  
-  /* Responsive */
-  @media (max-width: 768px) {
-    .menu-toggle {
-      display: block;
-    }
-  
-    .nav-links {
-      position: absolute;
-      top: 60px;
-      left: 0;
-      right: 0;
-      background-color: #1c1c1c;
-      flex-direction: column;
-      align-items: center;
-      display: none;
-    }
-  
-    .nav-links.active {
-      display: flex;
-    }
-  
-    .nav-links li {
-      margin: 10px 0;
-    }
-  
-    .contenido {
-      padding: 20px;
-    }
-  }
-  
+}
+
+/* Navbar */
+.navbar {
+    background-color: #000;
+}
+
+.navbar-brand {
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: #fff;
+}
+
+.navbar-brand:hover {
+    color: #e50914;
+}
+
+.nav-link {
+    color: #fff;
+    font-weight: 500;
+    transition: color 0.3s;
+}
+
+.nav-link:hover {
+    color: #e50914;
+}
+
+/* Welcome Section */
+h1.display-4 {
+    color: #e50914;
+}
+
+.lead {
+    color: #ccc;
+}
+
+/* Features Section */
+.card {
+    background-color: #111;
+    border: none;
+    box-shadow: 0 0 15px rgba(229, 9, 20, 0.3);
+}
+
+.card-title {
+    color: #e50914;
+}
+
+.card-text {
+    color: #ccc;
+}
+
+.btn-primary {
+    background-color: #e50914;
+    border: none;
+    transition: background 0.3s;
+}
+
+.btn-primary:hover {
+    background-color: #b00610;
+}
+
+.btn-success {
+    background-color: #28a745;
+    border: none;
+    transition: background 0.3s;
+}
+
+.btn-success:hover {
+    background-color: #218838;
+}
+
+.btn-warning {
+    background-color: #ffc107;
+    border: none;
+    transition: background 0.3s;
+}
+
+.btn-warning:hover {
+    background-color: #e0a800;
+}
+
+/* Footer */
+footer {
+    background-color: #111;
+    color: #aaa;
+    font-size: 0.9rem;
+}

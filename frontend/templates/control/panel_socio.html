@@ -1,46 +1,88 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Panel de Socio - K&J</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='panel_socio.css') }}">
-  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;600;800&display=swap" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bienvenido Socio - Mi Alquiler Autos</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='panel_socio.css') }}">
 </head>
 <body>
-  <!-- Navbar -->
-  <nav class="navbar">
-    <div class="logo">K&J</div>
-    <div class="menu-toggle" id="menu-toggle">&#9776;</div>
-    <ul class="nav-links" id="nav-links">
-      <li><a href="{{ url_for('mis_carros') }}">Mis Carros</a></li>
-      <li><a href="{{ url_for('PanelSocio') }}">Mis Reservas</a></li>
-      <li><a href="{{ url_for('PanelSocio') }}">Mis Ganancias</a></li>
-      <li><a href="{{ url_for('PanelSocio') }}">Opciones</a></li>
-      <li><a href="{{ url_for('cerrarSesion') }}" class="logout">Cerrar sesión</a></li>
-    </ul>
-  </nav>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">Mi Alquiler K&J</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/mis_carros">Mis Autos</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Ganancias</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Comentarios</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Configuración</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('cerrarSesion') }}">Cerrar Sesión</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
 
-  <!-- Contenido principal -->
-  <main class="contenido">
-    <h1>¡Bienvenido, socio!</h1>
-    <p>Nos alegra tenerte como parte de K&J.</p>
-    <p>Desde este panel podrás:</p>
-    <ul>
-      <li>Registrar y gestionar tus vehículos disponibles para alquiler.</li>
-      <li>Visualizar todas tus reservas actuales y pasadas.</li>
-      <li>Consultar tus ganancias acumuladas y pagos realizados.</li>
-      <li>Modificar tus datos, cambiar contraseñas y configurar tu perfil.</li>
-    </ul>
-    <p>Explora cada sección desde el menú de navegación. ¡Gracias por confiar en nosotros!</p>
-  </main>
+    <!-- Welcome Section -->
+    <div class="container mt-5">
+        <div class="text-center">
+            <h1 class="display-4">¡Bienvenido, Socio!</h1>
+            <p class="lead">Gracias por ser parte de Mi Alquiler Autos. Aquí puedes gestionar tus autos, revisar tus ganancias y leer los comentarios de tus clientes.</p>
+        </div>
+    </div>
 
-  <!-- Script para menú responsive -->
-  <script>
-    document.getElementById('menu-toggle').addEventListener('click', () => {
-      const nav = document.getElementById('nav-links');
-      nav.classList.toggle('active');
-    });
-  </script>
+    <!-- Features Section -->
+    <div class="container mt-5">
+        <div class="row text-center">
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Gestiona tus Autos</h5>
+                        <p class="card-text">Añade, edita o elimina los autos que tienes disponibles para alquiler.</p>
+                        <a href="#" class="btn btn-primary">Ver Autos</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Revisa tus Ganancias</h5>
+                        <p class="card-text">Consulta tus ingresos generados por los alquileres de tus autos.</p>
+                        <a href="#" class="btn btn-success">Ver Ganancias</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Comentarios de Clientes</h5>
+                        <p class="card-text">Lee lo que los clientes opinan sobre tus autos y su experiencia.</p>
+                        <a href="#" class="btn btn-warning">Ver Comentarios</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white text-center py-3 mt-5">
+        <p>&copy; 2023 Mi Alquiler Autos. Todos los derechos reservados.</p>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

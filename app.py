@@ -1,4 +1,6 @@
 from flask import Flask, jsonify, render_template, request, redirect, url_for, flash, session, send_file
+from werkzeug.utils import secure_filename
+import os
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import LoginManager, UserMixin, login_user, current_user, logout_user, login_required
 from pymongo import MongoClient
@@ -21,6 +23,27 @@ BASE_URL = "https://api.pexels.com/v1/search"
 
 app = Flask(__name__, template_folder='frontend/templates', static_folder='frontend/static')
 app.config.from_object(Config)
+
+# Configuración para subida de archivos
+UPLOAD_FOLDER = os.path.join('frontend', 'static', 'uploads', 'cars')
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'webp'}
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB max-limit
+
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+def save_car_image(file):
+    if file and allowed_file(file.filename):
+        filename = secure_filename(file.filename)
+        # Generar un nombre único para el archivo
+        base, ext = os.path.splitext(filename)
+        unique_filename = f"{base}_{generar_codigo_seguro()}{ext}"
+        file_path = os.path.join(app.config['UPLOAD_FOLDER'], unique_filename)
+        file.save(file_path)
+        return os.path.join('uploads', 'cars', unique_filename)
+    return None
 
 # Configuración de Flask-Login
 login_manager = LoginManager()
@@ -199,36 +222,53 @@ def mis_carros():
 @tipo_required('socio')
 def registrarCarro():
     try:
+        # Obtener datos del formulario
         nombre = request.form['nombre']
         tipo = request.form['tipo']
         placa = request.form['placa']
         año = request.form['año']
         color = request.form['color']
         ubicacion = request.form['ubicacion']
-        imagen = request.form['imagenes']
         
         # Verificar si la placa ya existe
         carro_existente = app.db.Carros.find_one({'placa': placa})
         if carro_existente:
             flash('Ya existe un carro registrado con esa placa', 'error')
             return redirect('/mis_carros')
-            
+        
+        # Manejar la imagen
+        imagen_path = 'default_car.png'  # Imagen por defecto
+        if 'imagen' in request.files:
+            file = request.files['imagen']
+            if file and file.filename != '':
+                saved_path = save_car_image(file)
+                if saved_path:
+                    imagen_path = saved_path
+                else:
+                    flash('Formato de imagen no válido. Se usará una imagen por defecto.', 'warning')
+        
+        # Preparar datos para MongoDB
         data = {
+            'idCarro': generar_codigo_seguro(),
             'idSocio': current_user.id,
             'nombre': nombre,
             'tipo': tipo,
-            'placa': placa,
+            'placa': placa.upper(),  # Convertir placa a mayúsculas
             'año': año,
             'color': color,
             'ubicacion': ubicacion,
             'ingresos': int(0),
-            'imagen': imagen
+            'imagen': imagen_path
         }
+        
+        # Guardar en la base de datos
         app.db.Carros.insert_one(data)
         flash('Carro registrado exitosamente', 'success')
         return redirect('/mis_carros')
+        
     except Exception as e:
-        flash('Error al registrar el carro', 'error')
+        print(f'Error al registrar el carro: {str(e)}')
+        flash(f'Error al registrar el carro: {str(e)}', 'error')
         return redirect('/mis_carros')
 
 

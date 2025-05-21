@@ -62,8 +62,8 @@
           <label for="ubicacion">Ubicación:</label>
           <input type="text" name="ubicacion" required>
 
-          <label for="imagenes">Fotos del carro:</label>
-          <input type="file" name="imagenes" accept="image/*" multiple required>
+          <label for="imagen">Foto del carro:</label>
+          <input type="file" name="imagen" accept="image/*" required>
 
           <button type="submit">Registrar Carro</button>
         </form>
@@ -75,7 +75,7 @@
       {% for carro in mis_carros %}
         <div class="car-card">
           <!-- Imagen Dinámica -->
-          <img src="{{ url_for('static', filename='public/' + carro.imagen) }}" alt="{{ carro.nombre }}">
+          <img src="{{ url_for('static', filename=carro.imagen) }}" alt="{{ carro.nombre }}">
           <div class="car-info">
             <h2>{{ carro.nombre }}</h2>
             <p>{{ carro.año }} | {{ carro.color }}</p>
