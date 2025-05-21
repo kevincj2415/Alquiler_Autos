@@ -477,6 +477,89 @@ def aplicar_filtros():
         'idUsuario': current_user.id if current_user.is_authenticated else 0,
         'pedidos': 0
     })
+    
+    
+@app.route('/ver_detalles/<carro_id>')
+def ver_detalles(carro_id):
+    carro = app.db.Carros.find_one({"idCarro": carro_id})
+    if carro is None:
+        flash('Carro no encontrado', 'error')
+        return redirect(url_for('Lista_carros'))
+    
+    return render_template('sitio/ver_detalles.html', carro=carro, status={
+        'secionIniciada': current_user.is_authenticated,
+        'nombre': current_user.nombre if current_user.is_authenticated else '',
+        'correo': current_user.correo if current_user.is_authenticated else '',
+        'tipo': current_user.tipo if current_user.is_authenticated else '',
+        'imagen': current_user.imagen if current_user.is_authenticated else 'usuario.png',
+        'idUsuario': current_user.id if current_user.is_authenticated else 0,
+        'pedidos': 0
+    })
+    
+@app.route('/agendar_reserva/<carro_id>', methods=['POST'])
+@login_required
+def agendar_reserva(carro_id):
+    try:
+        # Verificar si el usuario está autenticado
+        if not current_user.is_authenticated:
+            flash('Debes iniciar sesión para hacer una reserva', 'error')
+            return redirect(url_for('sesion'))
+
+        # Obtener datos del formulario
+        fecha_inicio = request.form.get('inicio')
+        fecha_final = request.form.get('fin')
+
+        # Validar fechas
+        if not fecha_inicio or not fecha_final:
+            flash('Debes proporcionar ambas fechas: inicio y fin.', 'error')
+            return redirect(url_for('ver_detalles', carro_id=carro_id))
+
+        try:
+            fecha_inicio = datetime.datetime.strptime(fecha_inicio, '%Y-%m-%d')
+            fecha_final = datetime.datetime.strptime(fecha_final, '%Y-%m-%d')
+            hoy = datetime.datetime.now().date()
+
+            if fecha_inicio.date() < hoy:
+                flash('La fecha de inicio no puede ser menor al día de hoy.', 'error')
+                return redirect(url_for('ver_detalles', carro_id=carro_id))
+
+            if fecha_inicio >= fecha_final:
+                flash('La fecha de inicio debe ser anterior a la fecha final.', 'error')
+                return redirect(url_for('ver_detalles', carro_id=carro_id))
+        except ValueError:
+            flash('Formato de fecha inválido. Usa el formato AAAA-MM-DD.', 'error')
+            return redirect(url_for('ver_detalles', carro_id=carro_id))
+
+        # Calcular la cantidad de días de la reserva
+        dias_reserva = (fecha_final - fecha_inicio).days
+
+        # Verificar si el carro existe
+        carro = app.db.Carros.find_one({"idCarro": carro_id})
+        if not carro:
+            flash('Carro no encontrado.', 'error')
+            return redirect(url_for('Lista_carros'))
+
+        # Crear la reserva
+        reserva_data = {
+            'idReserva': generar_codigo_seguro(),
+            'idCarro': carro_id,
+            'idUsuario': current_user.id,
+            'fecha_inicio': fecha_inicio,
+            'fecha_final': fecha_final,
+            'dias_reserva': dias_reserva,
+            'estado': "pendiente",
+            'carro_nombre': carro.get('nombre', 'Desconocido'),
+            'carro_imagen': carro.get('imagen', 'default_car.png')
+        }
+        app.db.Reservas.insert_one(reserva_data)
+
+        flash(f'Reserva realizada exitosamente por {dias_reserva} días. Está pendiente de confirmación.', 'success')
+        return redirect(url_for('Lista_carros'))
+
+    except Exception as e:
+        print(f"Error al agendar la reserva: {str(e)}")
+        flash('Ocurrió un error al intentar realizar la reserva. Por favor, inténtalo nuevamente.', 'error')
+        return redirect(url_for('ver_detalles', carro_id=carro_id))
 
 if __name__ == '__main__':
     app.run(debug = True, port=5700)

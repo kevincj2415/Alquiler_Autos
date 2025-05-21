@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Alquiler de Carros</title>
+    <script defer src="{{ url_for('static', filename='inicio.js') }}"></script>
     <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"></script>
     <link rel="stylesheet" href="{{ url_for('static', filename='lista_carros.css') }}">
     <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;600;800&display=swap" rel="stylesheet">
@@ -16,9 +17,9 @@
             <div class="logo">K & <span>J</span></div>
             <ul class="nav-links" id="nav-links">
                 <li><a href="/">Inicio</a></li>
-                <li><a href="#">Nosotros</a></li>
+                <li><a href="/#nosotros">Nosotros</a></li>
                 <li><a href="/lista_carros">Vehículos</a></li>
-                <li><a href="#">Opiniones</a></li>
+                <li><a href="/#opiniones">Opiniones</a></li>
                 {% if status['secionIniciada'] == False %}
                     <li><a href="/sesion" class="btn-login">Iniciar Sesión</a></li>
                 {%else%}
@@ -64,28 +65,21 @@
         </form>
     </section>
 
-    <main class="contenedor-principal">
-        <div class="carros-container">
-            {% for carro in carros %}
-              <div class="car-card">
+    <div class="carros-container">
+        {% for carro in carros %}
+            <div class="car-card">
                 <img src="{{ url_for('static', filename=carro.imagen) }}" alt="{{ carro.nombre }}">
                 <div class="car-info">
-                  <h2>{{ carro.nombre }}</h2>
-                  <p>{{ carro.año }} | {{ carro.color }}</p>
-                  <p><strong>Ingresos:</strong> ${{ carro.ingresos }} COP</p>
-                  <a class="ver-detalles" href="{{ url_for('Detalles', carro_id=carro.idCarro) }}">Ver Detalles</a>
+                    <h2>{{ carro.nombre }}</h2>
+                    <p>{{ carro.año }} | {{ carro.color }}</p>
+                    <p><strong>Ubicación:</strong> {{ carro.ubicacion }}</p>
+                    <p><strong>Precio:</strong> ${{ carro.precio }} COP</p>
+                    <a class="ver-detalles" href="{{ url_for('ver_detalles', carro_id=carro.idCarro) }}">Ver Detalles</a>
                 </div>
-              </div>
-            {% endfor %}
-          </div>
-        </main>
-
-        <section class="mapa" id="mapa">
-            <h2>Ubicación de los carros</h2>
-            <div id="mapa" style="width: 100%; height: 400px; background-color: #ddd;">
-                <p style="text-align:center; padding-top: 180px; color: #666;">Mapa cargando...</p>
             </div>
-        </section>
+        {% endfor %}
+    </div>
+    
     </main>
 
     <footer class="footer">

@@ -5,93 +5,93 @@
     box-sizing: border-box;
     font-family: 'Rubik', sans-serif;
     color: #333;
-}
-
-a {
+  }
+  
+  a {
     text-decoration: none;
     color: inherit;
-}
-
-body {
+  }
+  
+  body {
     background-color: #f9f9f9;
     line-height: 1.6;
     min-height: 100vh;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-}
-
-/* Header */
-.header {
-    background-color: #e50914; /* rojo vibrante */
+  }
+  
+  /* Header */
+  .header {
+    background-color: #e50914;
     color: white;
     padding: 1.5rem 2rem;
     text-align: center;
     box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-}
-
-.header h1 {
+  }
+  
+  .header h1 {
     font-size: 2.5rem;
     margin-bottom: 0.3rem;
-}
-
-.header p {
+  }
+  
+  .header p {
     font-size: 1.2rem;
     font-weight: 500;
-}
-
-/* Sección de filtros */
-.filtros {
+  }
+  
+  /* Sección de filtros */
+  .filtros {
     background-color: white;
     padding: 1.5rem 2rem;
     margin: 1rem 2rem;
     border-radius: 8px;
     box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-}
-
-.filtros h2 {
+  }
+  
+  .filtros h2 {
     margin-bottom: 1rem;
     color: #e50914;
     font-weight: 700;
     font-size: 1.6rem;
-}
-
-#form-filtros {
+  }
+  
+  #form-filtros {
     display: flex;
     flex-wrap: wrap;
     gap: 1rem 2rem;
     align-items: flex-end;
-}
-
-.filtro-item {
+  }
+  
+  .filtro-item {
     flex: 1 1 180px;
     display: flex;
     flex-direction: column;
-}
-
-.filtro-item label {
+  }
+  
+  .filtro-item label {
     margin-bottom: 0.4rem;
     font-weight: 600;
     color: #555;
-}
-
-.filtro-item input,
-.filtro-item select {
+  }
+  
+  .filtro-item input,
+  .filtro-item select {
     padding: 0.5rem 0.8rem;
     border: 1px solid #ccc;
     border-radius: 6px;
     font-size: 1rem;
     transition: border-color 0.3s ease;
-}
-
-.filtro-item input:focus,
-.filtro-item select:focus {
+  }
+  
+  .filtro-item input:focus,
+  .filtro-item select:focus {
     border-color: #e50914;
     outline: none;
-}
-
-.btn-filtrar,
-.btn-limpiar {
+  }
+  
+  .btn-filtrar,
+  .btn-limpiar {
     background-color: #e50914;
     color: white;
     border: none;
@@ -102,264 +102,43 @@ body {
     cursor: pointer;
     transition: background-color 0.3s ease;
     user-select: none;
-}
-
-.btn-limpiar {
+  }
+  
+  .btn-limpiar {
     background-color: #555;
-}
-
-.btn-filtrar:hover {
+  }
+  
+  .btn-filtrar:hover {
     background-color: #b0070f;
-}
-
-.btn-limpiar:hover {
+  }
+  
+  .btn-limpiar:hover {
     background-color: #333;
-}
-
-/* Contenedor principal */
-.contenedor-principal {
+  }
+  
+  /* Contenedor principal */
+  .contenedor-principal {
     display: flex;
     gap: 2rem;
     margin: 0 2rem 3rem 2rem;
     flex-wrap: wrap;
-}
-
-/* Lista de carros */
-.lista-carros {
+  }
+  
+  /* Lista de carros */
+  .lista-carros {
     flex: 1 1 650px;
     background-color: white;
     padding: 1.5rem;
     border-radius: 8px;
     box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-}
-
-.lista-carros h2 {
+  }
+  
+  .lista-carros h2 {
     color: #e50914;
     margin-bottom: 1rem;
-}
-
-/* Contenedor de tarjetas */
-.tarjetas-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 1.5rem;
-}
-
-/* Tarjeta de carro */
-.tarjeta-carro {
-    background-color: #fff;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgb(0 0 0 / 0.1);
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    cursor: pointer;
-}
-
-.tarjeta-carro:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 15px rgba(229, 9, 20, 0.4);
-}
-
-/* Imagen del carro */
-.tarjeta-carro img {
-    width: 100%;
-    height: 180px;
-    object-fit: cover;
-}
-
-/* Contenido tarjeta */
-.tarjeta-carro .contenido {
-    padding: 1rem 1.2rem;
-    flex-grow: 1;
-    display: flex;
-    flex-direction: column;
-}
-
-.tarjeta-carro .contenido h3 {
-    font-size: 1.3rem;
-    margin-bottom: 0.3rem;
-    color: #e50914;
-}
-
-.tarjeta-carro .contenido p {
-    flex-grow: 1;
-    font-size: 0.95rem;
-    color: #555;
-    margin-bottom: 1rem;
-}
-
-.tarjeta-carro .contenido .info-extra {
-    font-size: 0.9rem;
-    color: #666;
-    margin-bottom: 0.5rem;
-}
-
-/* Botón ver detalles */
-.btn-ver-detalles {
-    align-self: flex-start;
-    background-color: #e50914;
-    color: white;
-    border: none;
-    padding: 0.5rem 1.2rem;
-    font-weight: 600;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-    text-decoration: none;
-    display: inline-block;
-}
-
-.btn-ver-detalles:hover {
-    background-color: #b0070f;
-}
-
-/* Mapa */
-.mapa {
-    flex: 1 1 350px;
-    background-color: white;
-    padding: 1.5rem;
-    border-radius: 8px;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-    min-height: 450px;
-}
-
-.mapa h2 {
-    color: #e50914;
-    margin-bottom: 1rem;
-}
-
-/* Footer */
-.footer {
-    background-color: #222;
-    color: #ddd;
-    text-align: center;
-    padding: 1rem 2rem;
-    font-size: 0.9rem;
-    margin-top: auto;
-}
-
-/* Responsive */
-@media (max-width: 900px) {
-    .contenedor-principal {
-        flex-direction: column;
-        margin: 0 1rem 2rem 1rem;
-    }
-    .lista-carros, .mapa {
-        flex: 1 1 100%;
-        margin-bottom: 2rem;
-    }
-}
-
-header {
-    background-color: #000;
-    padding: 1rem 2rem;
-    position: sticky;
-    top: 0;
-    z-index: 1000;
-}
-
-.navbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.logo {
-    font-size: 1.8rem;
-    font-weight: 800;
-    color: #fff;
-}
-
-.logo span {
-    color: #e50914;
-}
-
-.nav-links {
-    list-style: none;
-    display: flex;
-    gap: 1.5rem;
-}
-
-.nav-links li a {
-    color: #fff;
-    font-weight: 500;
-    transition: color 0.3s;
-}
-
-.nav-links li a:hover {
-    color: #e50914;
-}
-
-.btn-login {
-    background: #e50914;
-    padding: 0.5rem 1rem;
-    border-radius: 8px;
-    color: white;
-    font-weight: bold;
-}
-
-.hamburger {
-    display: none;
-    font-size: 1.5rem;
-    color: white;
-    cursor: pointer;
-}
-
-/* Responsive navbar */
-@media (max-width: 768px) {
-    .nav-links {
-        flex-direction: column;
-        background: #111;
-        position: absolute;
-        top: 70px;
-        right: 0;
-        width: 200px;
-        display: none;
-    }
-
-    .nav-links.active {
-        display: flex;
-    }
-
-    .hamburger {
-        display: block;
-    }
-}
-
-.video-background {
-    position: fixed;
-    top: 0;
-    left: 0;
-    z-index: -1;
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
   }
   
-  .video-background video {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    filter: brightness(0.3);
-  }
-  
-  .contenido {
-    position: relative;
-    z-index: 1;
-  }
-  
-  #imagen-usuario {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    object-fit: cover;
-    border: 2px solid #fff;
-  }
-  
-
-
+  /* Tarjetas contenedor */
   .carros-container {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -369,7 +148,7 @@ header {
     max-width: 1200px;
   }
   
-  /* TARJETA INDIVIDUAL */
+  /* Tarjeta individual */
   .car-card {
     background-color: #fff;
     border-radius: 12px;
@@ -400,7 +179,7 @@ header {
   }
   
   .car-info h2 {
-    font-size: 1.4rem;
+    font-size: 1.4rem; 
     color: #000;
     margin-bottom: 0.3rem;
   }
@@ -411,7 +190,7 @@ header {
     line-height: 1.4;
   }
   
-  /* BOTÓN DE DETALLES */
+  /* Botón detalles */
   .ver-detalles {
     margin-top: 1rem;
     background-color: #000;
@@ -428,3 +207,160 @@ header {
   .ver-detalles:hover {
     background-color: #333;
   }
+  
+  /* Mapa */
+  .mapa {
+    flex: 1 1 350px;
+    background-color: white;
+    padding: 1.5rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    min-height: 450px;
+  }
+  
+  .mapa h2 {
+    color: #e50914;
+    margin-bottom: 1rem;
+  }
+  
+  /* Footer */
+  .footer {
+    background-color: #222;
+    color: #ddd;
+    text-align: center;
+    padding: 1rem 2rem;
+    font-size: 0.9rem;
+    margin-top: auto;
+  }
+  
+  /* Video de fondo */
+  .video-background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+  }
+  
+  .video-background video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: brightness(0.3);
+  }
+  
+  .contenido {
+    position: relative;
+    z-index: 1;
+  }
+  
+  /* Imagen de usuario */
+  #imagen-usuario {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #fff;
+  }
+  
+  /* Navbar */
+  header {
+    background-color: #000;
+    padding: 1rem 2rem;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+  }
+  
+  .navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .logo {
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: #fff;
+  }
+  
+  .logo span {
+    color: #e50914;
+  }
+  
+  .nav-links {
+    list-style: none;
+    display: flex;
+    gap: 1.5rem;
+  }
+  
+  .nav-links li a {
+    color: #fff;
+    font-weight: 500;
+    transition: color 0.3s;
+  }
+  
+  .nav-links li a:hover {
+    color: #e50914;
+  }
+  
+  .btn-login {
+    background: #e50914;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    color: white;
+    font-weight: bold;
+  }
+  
+  .hamburger {
+    display: none;
+    font-size: 1.5rem;
+    color: white;
+    cursor: pointer;
+  }
+  
+  /* Responsive */
+  @media (max-width: 900px) {
+    .contenedor-principal {
+      flex-direction: column;
+      margin: 0 1rem 2rem 1rem;
+    }
+    .lista-carros, .mapa {
+      flex: 1 1 100%;
+      margin-bottom: 2rem;
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .nav-links {
+      flex-direction: column;
+      background: #111;
+      position: absolute;
+      top: 70px;
+      right: 0;
+      width: 200px;
+      display: none;
+    }
+  
+    .nav-links.active {
+      display: flex;
+    }
+  
+    .hamburger {
+      display: block;
+    }
+  
+    .carros-container {
+      grid-template-columns: 1fr !important;
+      padding: 0 1rem;
+    }
+  
+    .car-card {
+      width: 100%;
+      max-width: 400px;
+      margin: 0 auto;
+    }
+  }
+  

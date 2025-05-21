@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Detalles del Vehículo</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='ver_detalles.css') }}">
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</head>
+<body>
+
+    <div class="video-background">
+        <video autoplay muted loop>
+            <source src="{{ url_for('static', filename='public/fondo_carros.mp4') }}" type="video/mp4">
+            Tu navegador no soporta videos HTML5.
+        </video>
+    </div>
+
+  <header>
+    <nav class="navbar">
+      <div class="logo"><span>K & </span>J</div>
+      <ul class="nav-links">
+        <li><a href="/">Inicio</a></li>
+        <li><a href="#">Nosotros</a></li>
+        <li><a href="/lista_carros">Vehículos</a></li>
+        <li><a href="/#opiniones">opiniones</a></li>
+        <li><a href="#" class="btn-login">Iniciar sesión</a></li>
+      </ul>
+      <div class="hamburger"><i class="fas fa-bars"></i></div>
+    </nav>
+  </header>
+
+  <main class="detalles-container">
+    <!-- Carrusel -->
+    <div class="carrusel">
+        {% if carro.fotos and carro.fotos|length > 0 %}
+                        {% if carro.fotos|length > 1 %}
+                            <!-- Carrusel -->
+                            <div id="carouselFotos" class="carousel slide" data-bs-ride="carousel">
+                                <div class="carousel-inner">
+                                    {% for foto in carro.fotos %}
+                                        <div class="carousel-item {% if loop.first %}active{% endif %}">
+                                            <img src="{{ url_for('static', filename=foto) }}" class="d-block w-100 rounded" alt="Foto {{ loop.index }}">
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                                <button class="carousel-control-prev" type="button" data-bs-target="#carouselFotos" data-bs-slide="prev">
+                                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                </button>
+                                <button class="carousel-control-next" type="button" data-bs-target="#carouselFotos" data-bs-slide="next">
+                                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                </button>
+                            </div>
+                        {% else %}
+                            <!-- Una sola imagen -->
+                            <img src="{{ url_for('static', filename=carro.fotos[0]) }}" class="img-fluid rounded" alt="Foto del carro">
+                        {% endif %}
+                    {% else %}
+                        <p class="text-muted text-center">No hay fotos disponibles para este carro.</p>
+                    {% endif %}
+    </div>
+
+    <!-- Info vehículo -->
+    <section class="info-vehiculo">
+        <h2>{{ carro.nombre }}</h2>
+        <p>{{ carro.año }} | {{ carro.color }} | {{carro.tipo}} </p>
+        <p><strong>Precio:</strong> ${{ carro.precio }} COP</p>
+        <p><strong>Ubicación:</strong> {{ carro.ubicacion }}</p>
+
+    </section>
+
+    <!-- Formulario -->
+    <form class="formulario-reserva" action="{{ url_for('agendar_reserva', carro_id=carro.idCarro) }}" method="post">
+      <input type="date" name="inicio" required />
+      <input type="date" name="fin" required />
+      <button type="submit">Agendar Reserva</button>
+    </form>
+
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div class="flash-messages">
+          {% for category, message in messages %}
+            <div class="alert {{ category }}">{{ message }}</div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+  <footer class="footer">
+    © 2025 AutoRent. Todos los derechos reservados.
+  </footer>
+
+  <script>
+    // Menú responsive
+    document.querySelector('.hamburger').addEventListener('click', () => {
+      document.querySelector('.nav-links').classList.toggle('active');
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,217 @@
+
+
+:root {
+  --rojo: #e50914;
+  --fondo: #121212;
+  --gris-claro: #e0e0e0;
+  --gris-oscuro: #2c2c2c;
+  --blanco: #ffffff;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Rubik', sans-serif;
+  background-color: var(--fondo);
+  color: var(--gris-claro);
+  line-height: 1.6;
+}
+
+/* ===== NAVBAR ===== */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  background-color: var(--gris-oscuro);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.logo {
+  font-size: 1.6rem;
+  font-weight: bold;
+  color: var(--blanco);
+}
+
+.logo span {
+  color: var(--rojo);
+}
+
+.nav-links {
+  list-style: none;
+  display: flex;
+  gap: 1.5rem;
+}
+
+.nav-links li a {
+  text-decoration: none;
+  color: var(--gris-claro);
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+.nav-links li a:hover {
+  color: var(--rojo);
+}
+
+.btn-login {
+  background-color: var(--rojo);
+  color: var(--blanco) !important;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-weight: 600;
+}
+
+.hamburger {
+  display: none;
+  font-size: 1.5rem;
+  color: var(--blanco);
+  cursor: pointer;
+}
+
+/* ===== CONTENEDOR PRINCIPAL ===== */
+.detalles-container {
+  max-width: 1100px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background-color: var(--gris-oscuro);
+  border-radius: 12px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.4);
+}
+
+/* ===== CARRUSEL ===== */
+.carrusel {
+  margin-bottom: 2rem;
+}
+
+.carrusel img,
+.carousel-item img {
+  width: 100%;
+  max-height: 450px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+  background-color: var(--rojo);
+  border-radius: 50%;
+}
+
+/* ===== INFORMACIÓN DEL VEHÍCULO ===== */
+.info-vehiculo h2 {
+  font-size: 2rem;
+  color: var(--rojo);
+  margin-bottom: 0.5rem;
+}
+
+.info-vehiculo p {
+  color: var(--gris-claro);
+  font-size: 1rem;
+  margin-bottom: 0.4rem;
+}
+
+/* ===== FORMULARIO ===== */
+.formulario-reserva {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.formulario-reserva input {
+  flex: 1 1 200px;
+  padding: 0.6rem;
+  border: 1px solid #555;
+  border-radius: 6px;
+  background-color: #222;
+  color: var(--blanco);
+}
+
+.formulario-reserva button {
+  background-color: var(--rojo);
+  color: white;
+  border: none;
+  padding: 0.7rem 1.5rem;
+  font-weight: 700;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.formulario-reserva button:hover {
+  background-color: #b0070f;
+}
+
+/* ===== FOOTER ===== */
+.footer {
+  text-align: center;
+  padding: 1rem;
+  margin-top: 3rem;
+  background-color: #1a1a1a;
+  color: var(--gris-claro);
+  border-radius: 6px;
+}
+
+/* ===== RESPONSIVE ===== */
+@media screen and (max-width: 768px) {
+  .nav-links {
+    position: absolute;
+    top: 70px;
+    right: 0;
+    background-color: var(--gris-oscuro);
+    flex-direction: column;
+    width: 100%;
+    display: none;
+    padding: 1rem 2rem;
+  }
+
+  .nav-links.active {
+    display: flex;
+  }
+
+  .hamburger {
+    display: block;
+  }
+
+  .formulario-reserva {
+    flex-direction: column;
+  }
+}
+
+.video-background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+  }
+  
+  .video-background video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: brightness(0.3);
+  }
+  
+  .flash-messages {
+    position: absolute;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 100;
+  }
+  .alert.error {
+    background-color: #ff4d4d;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+  }
