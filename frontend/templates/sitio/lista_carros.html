@@ -4,19 +4,38 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Alquiler de Carros</title>
-    <!-- Aquí puedes agregar tu CSS -->
-    <link rel="stylesheet" href="styles.css" />
+    <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='lista_carros.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 <body>
 
-    <header class="header">
-        <h1>Alquila tu carro ideal</h1>
-        <p>Encuentra el vehículo perfecto cerca de ti</p>
+    <header>
+        <nav class="navbar">
+            <div class="logo">K & <span>J</span></div>
+            <ul class="nav-links" id="nav-links">
+                <li><a href="/">Inicio</a></li>
+                <li><a href="#">Nosotros</a></li>
+                <li><a href="/lista_carros">Vehículos</a></li>
+                <li><a href="#">Opiniones</a></li>
+                {% if status['secionIniciada'] == False %}
+                    <li><a href="/sesion" class="btn-login">Iniciar Sesión</a></li>
+                {%else%}
+                    <img id="imagen-usuario" src="{{ url_for('static', filename='public/usuarios/' + status['imagen']) }}" alt="Usuario">
+                    <li><a href="/cerrarSesion" class="btn-login">Cerrar Sesión</a></li>
+                {%endif%}
+
+            </ul>
+            <div class="hamburger" id="hamburger">
+                <i class="fas fa-bars"></i>
+            </div>
+        </nav>
     </header>
 
     <section class="filtros">
         <h2>Filtros de búsqueda</h2>
-        <form id="form-filtros">
+        <form id="form-filtros" action="/control/aplicarFiltros" method="post">
             <div class="filtro-item">
                 <label for="filtro-tipo">Tipo de vehículo:</label>
                 <select id="filtro-tipo" name="tipo">
@@ -35,33 +54,35 @@
             </div>
 
             <div class="filtro-item">
-                <label for="filtro-ano">Año mínimo:</label>
-                <input type="number" id="filtro-ano" name="ano" min="1990" max="2025" placeholder="Desde" />
-            </div>
-
-            <div class="filtro-item">
                 <label for="filtro-ubicacion">Ubicación:</label>
                 <input type="text" id="filtro-ubicacion" name="ubicacion" placeholder="Ciudad o barrio" />
             </div>
 
-            <button type="submit" class="btn-filtrar">Buscar</button>
-            <button type="reset" class="btn-limpiar">Limpiar filtros</button>
+            <button type="submit" id="btn-filtrar" class="btn-filtrar">Buscar</button>
+            <button type="reset" id="btn-limpiar" class="btn-limpiar">Limpiar filtros</button>
+
         </form>
     </section>
 
     <main class="contenedor-principal">
-        <section class="lista-carros" id="lista-carros">
-            <h2>Carros disponibles</h2>
-            <div class="tarjetas-container">
-                <!-- Aquí se insertarán las tarjetas de carros con JS -->
-            </div>
-        </section>
+        <div class="carros-container">
+            {% for carro in carros %}
+              <div class="car-card">
+                <img src="{{ url_for('static', filename=carro.imagen) }}" alt="{{ carro.nombre }}">
+                <div class="car-info">
+                  <h2>{{ carro.nombre }}</h2>
+                  <p>{{ carro.año }} | {{ carro.color }}</p>
+                  <p><strong>Ingresos:</strong> ${{ carro.ingresos }} COP</p>
+                  <a class="ver-detalles" href="{{ url_for('Detalles', carro_id=carro.idCarro) }}">Ver Detalles</a>
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+        </main>
 
         <section class="mapa" id="mapa">
             <h2>Ubicación de los carros</h2>
-            <!-- El mapa se incrustará aquí -->
-            <div id="map" style="width: 100%; height: 400px; background-color: #ddd;">
-                <!-- Mapa placeholder -->
+            <div id="mapa" style="width: 100%; height: 400px; background-color: #ddd;">
                 <p style="text-align:center; padding-top: 180px; color: #666;">Mapa cargando...</p>
             </div>
         </section>
@@ -71,8 +92,6 @@
         <p>© 2025 Alquiler de Carros. Todos los derechos reservados.</p>
     </footer>
 
-    <!-- Aquí puedes agregar tu JS -->
-    <script src="app.js"></script>
 
 </body>
 </html>

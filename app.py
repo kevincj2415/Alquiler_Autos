@@ -415,5 +415,68 @@ def eliminarCarro(carro_id):
 
 
 
+
+
+@app.route('/lista_carros')
+def Lista_carros():
+    carros = [carro for carro in app.db.Carros.find()]
+    return render_template('sitio/lista_carros.html',carros = carros, status={
+        'secionIniciada': current_user.is_authenticated,
+        'nombre': current_user.nombre if current_user.is_authenticated else '',
+        'correo': current_user.correo if current_user.is_authenticated else '',
+        'tipo': current_user.tipo if current_user.is_authenticated else '',
+        'imagen': current_user.imagen if current_user.is_authenticated else 'usuario.png',
+        'idUsuario': current_user.id if current_user.is_authenticated else 0,
+        'pedidos': 0
+    })
+
+
+@app.route('/control/aplicarFiltros', methods=['POST'])
+def aplicar_filtros():
+    filtro_Tipo = request.form.get('tipo', '')
+    filtro_ubicacion = request.form.get('ubicacion', '')
+    filtro_precioMin = request.form.get('precioMin', '')
+    filtro_precioMax = request.form.get('precioMax', '')
+    filtro_color = request.form.get('color', '')
+    filtro_marca = request.form.get('marca', '')
+    filtro_año = request.form.get('año', '')
+
+    try:
+        filtro_precioMin = int(filtro_precioMin)
+    except (ValueError, TypeError):
+        filtro_precioMin = 0
+
+    try:
+        filtro_precioMax = int(filtro_precioMax)
+    except (ValueError, TypeError):
+        filtro_precioMax = 999999999
+
+    try:
+        filtro_año = int(filtro_año)
+    except (ValueError, TypeError):
+        filtro_año = None
+
+    query = {}
+    if filtro_Tipo:
+        query['tipo'] = filtro_Tipo
+    if filtro_ubicacion:
+        query['ubicacion'] = filtro_ubicacion
+    if filtro_color:
+        query['color'] = filtro_color
+
+    carros = list(app.db.Carros.find(query))
+    
+    print(f"Consulta: {query}")
+
+    return render_template('sitio/lista_carros.html', carros=carros, status={
+        'secionIniciada': current_user.is_authenticated,
+        'nombre': current_user.nombre if current_user.is_authenticated else '',
+        'correo': current_user.correo if current_user.is_authenticated else '',
+        'tipo': current_user.tipo if current_user.is_authenticated else '',
+        'imagen': current_user.imagen if current_user.is_authenticated else 'usuario.png',
+        'idUsuario': current_user.id if current_user.is_authenticated else 0,
+        'pedidos': 0
+    })
+
 if __name__ == '__main__':
     app.run(debug = True, port=5700)
