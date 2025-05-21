@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Alquiler de Carros</title>
+    <!-- Aquí puedes agregar tu CSS -->
+    <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+    <header class="header">
+        <h1>Alquila tu carro ideal</h1>
+        <p>Encuentra el vehículo perfecto cerca de ti</p>
+    </header>
+
+    <section class="filtros">
+        <h2>Filtros de búsqueda</h2>
+        <form id="form-filtros">
+            <div class="filtro-item">
+                <label for="filtro-tipo">Tipo de vehículo:</label>
+                <select id="filtro-tipo" name="tipo">
+                    <option value="">Todos</option>
+                    <option value="Sedán">Sedán</option>
+                    <option value="SUV">SUV</option>
+                    <option value="Pickup">Pickup</option>
+                    <option value="Camioneta">Camioneta</option>
+                    <option value="Deportivo">Deportivo</option>
+                </select>
+            </div>
+
+            <div class="filtro-item">
+                <label for="filtro-color">Color:</label>
+                <input type="text" id="filtro-color" name="color" placeholder="Ej: rojo, blanco..." />
+            </div>
+
+            <div class="filtro-item">
+                <label for="filtro-ano">Año mínimo:</label>
+                <input type="number" id="filtro-ano" name="ano" min="1990" max="2025" placeholder="Desde" />
+            </div>
+
+            <div class="filtro-item">
+                <label for="filtro-ubicacion">Ubicación:</label>
+                <input type="text" id="filtro-ubicacion" name="ubicacion" placeholder="Ciudad o barrio" />
+            </div>
+
+            <button type="submit" class="btn-filtrar">Buscar</button>
+            <button type="reset" class="btn-limpiar">Limpiar filtros</button>
+        </form>
+    </section>
+
+    <main class="contenedor-principal">
+        <section class="lista-carros" id="lista-carros">
+            <h2>Carros disponibles</h2>
+            <div class="tarjetas-container">
+                <!-- Aquí se insertarán las tarjetas de carros con JS -->
+            </div>
+        </section>
+
+        <section class="mapa" id="mapa">
+            <h2>Ubicación de los carros</h2>
+            <!-- El mapa se incrustará aquí -->
+            <div id="map" style="width: 100%; height: 400px; background-color: #ddd;">
+                <!-- Mapa placeholder -->
+                <p style="text-align:center; padding-top: 180px; color: #666;">Mapa cargando...</p>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <p>© 2025 Alquiler de Carros. Todos los derechos reservados.</p>
+    </footer>
+
+    <!-- Aquí puedes agregar tu JS -->
+    <script src="app.js"></script>
+
+</body>
+</html>

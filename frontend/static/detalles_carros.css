@@ -1,0 +1,227 @@
+body {
+    font-family: 'Rubik', sans-serif;
+    background-color: #121212;
+    color: #f5f5f5;
+    margin: 0;
+    padding: 0;
+}
+
+.card {
+    background-color: #1f1f1f;
+    border: none;
+    border-radius: 16px;
+    box-shadow: 0 0 25px rgba(0, 0, 0, 0.6);
+}
+
+h1, h2 {
+    color: #e50914;
+    font-weight: bold;
+}
+
+.list-group-item {
+    border: none;
+    padding: 10px 15px;
+    font-size: 1rem;
+}
+
+.carousel-inner img {
+    max-height: 350px;
+    object-fit: cover;
+}
+
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+    background-color: rgba(0, 0, 0, 0.6);
+    border-radius: 50%;
+}
+
+.btn {
+    border-radius: 12px;
+    padding: 10px 20px;
+    font-weight: 500;
+    transition: all 0.3s ease-in-out;
+}
+
+.btn-warning {
+    background-color: #ff9800;
+    border: none;
+    color: #fff;
+}
+
+.btn-warning:hover {
+    background-color: #e68a00;
+}
+
+.btn-danger {
+    background-color: #c62828;
+    border: none;
+    color: #fff;
+}
+
+.btn-danger:hover {
+    background-color: #b71c1c;
+}
+
+.btn-primary {
+    background-color: #e50914;
+    border: none;
+}
+
+.btn-primary:hover {
+    background-color: #c40812;
+}
+
+input[type="file"] {
+    background-color: #2b2b2b;
+    color: #ccc;
+    border: 1px solid #444;
+    border-radius: 8px;
+    padding: 10px;
+}
+
+input[type="file"]::file-selector-button {
+    background-color: #e50914;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 8px;
+    color: white;
+    cursor: pointer;
+}
+
+input[type="file"]::file-selector-button:hover {
+    background-color: #c40812;
+}
+
+/* Modal base */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 999;
+    left: 0; top: 0;
+    width: 100%; height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+/* Contenido del modal */
+.modal-contenido {
+    background-color: #fff;
+    margin: 10% auto;
+    padding: 20px;
+    border-radius: 10px;
+    width: 90%;
+    max-width: 500px;
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+.modal-contenido select {
+    width: 100%;
+    padding: 0.6rem;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    margin-bottom: 1rem;
+    font-size: 1rem;
+  }
+
+/* Botón de cerrar */
+.cerrar {
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.cerrar:hover {
+    color: red;
+}
+
+/* Inputs bonitos */
+.modal-contenido input[type="text"],
+.modal-contenido input[type="number"],
+.modal-contenido input[type="file"] {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 15px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+/* Botón de guardar */
+.btn-guardar {
+    background-color: #e50914;
+    color: #fff;
+    padding: 10px;
+    width: 100%;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.btn-guardar:hover {
+    background-color: #b00710;
+}
+
+@keyframes fadeIn {
+    from {opacity: 0;}
+    to {opacity: 1;}
+}
+
+.btn-borrar {
+    background-color: #e53935;
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.btn-borrar:hover {
+    background-color: #b71c1c;
+}
+
+.btn-confirmar-eliminar {
+    background-color: #d32f2f;
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 8px;
+    width: 100%;
+    margin-bottom: 10px;
+    cursor: pointer;
+}
+
+.btn-confirmar-eliminar:hover {
+    background-color: #b71c1c;
+}
+
+.btn-cancelar {
+    background-color: #ccc;
+    color: #333;
+    padding: 10px;
+    border: none;
+    border-radius: 8px;
+    width: 100%;
+    cursor: pointer;
+}
+
+.btn-cancelar:hover {
+    background-color: #aaa;
+}
+
+.back-button {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    background-color: rgba(229, 9, 20, 0.8);
+    color: white;
+    padding: 10px 16px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+    z-index: 2;
+  }
+  
+  .back-button:hover {
+    background-color: rgba(176, 6, 16, 0.9);
+  }

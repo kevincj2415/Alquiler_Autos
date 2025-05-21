@@ -62,6 +62,9 @@
           <label for="ubicacion">Ubicación:</label>
           <input type="text" name="ubicacion" required>
 
+          <label for="precio">Precio x Hora:</label>
+          <input type="number" name="precio" required>
+
           <label for="imagen">Foto del carro:</label>
           <input type="file" name="imagen" accept="image/*" required>
 
@@ -80,7 +83,7 @@
             <h2>{{ carro.nombre }}</h2>
             <p>{{ carro.año }} | {{ carro.color }}</p>
             <p><strong>Ingresos:</strong> ${{ carro.ingresos }} COP</p>
-            <button class="ver-detalles">Ver Detalles</button>
+            <a class="ver-detalles" href="{{ url_for('Detalles', carro_id=carro.idCarro) }}">Ver Detalles</a>
           </div>
         </div>
       {% endfor %}

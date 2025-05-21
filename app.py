@@ -229,6 +229,7 @@ def registrarCarro():
         año = request.form['año']
         color = request.form['color']
         ubicacion = request.form['ubicacion']
+        precio = request.form['precio']
         
         # Verificar si la placa ya existe
         carro_existente = app.db.Carros.find_one({'placa': placa})
@@ -243,7 +244,7 @@ def registrarCarro():
             if file and file.filename != '':
                 saved_path = save_car_image(file)
                 if saved_path:
-                    imagen_path = saved_path
+                    imagen_path = saved_path.replace('\\', '/')  # Reemplazar \ por /
                 else:
                     flash('Formato de imagen no válido. Se usará una imagen por defecto.', 'warning')
         
@@ -257,8 +258,11 @@ def registrarCarro():
             'año': año,
             'color': color,
             'ubicacion': ubicacion,
+            'precio': precio,
+            'disponible': True,
             'ingresos': int(0),
-            'imagen': imagen_path
+            'imagen': imagen_path,
+            'fotos' : [imagen_path, ],
         }
         
         # Guardar en la base de datos
@@ -270,6 +274,144 @@ def registrarCarro():
         print(f'Error al registrar el carro: {str(e)}')
         flash(f'Error al registrar el carro: {str(e)}', 'error')
         return redirect('/mis_carros')
+    
+@app.route('/detalles/<carro_id>')
+@login_required
+@tipo_required('socio')
+def Detalles(carro_id):
+    try:
+        carro =  app.db.Carros.find_one({"idCarro": carro_id})
+        if carro is None:
+            flash('Carro no encontrado', 'error')
+            return redirect(url_for('PanelSocio'))
+        return render_template('control/detalles_carros.html', carro=carro)
+    except Exception as e:
+        flash('Error al cargar los carros', 'error')
+        return redirect(url_for('PanelSocio'))
+    
+from flask import request, redirect, flash, url_for
+from flask_login import login_required, current_user
+from werkzeug.utils import secure_filename
+import os
+
+@app.route('/control/agregarFoto/<carro_id>', methods=['POST'])
+@login_required
+@tipo_required('socio')
+def AgregarFoto(carro_id):
+    try:
+        # Buscar el carro
+        carro = app.db.Carros.find_one({"idCarro": carro_id, "idSocio": current_user.id})
+        if carro is None:
+            flash("Carro no encontrado o no tienes permiso para modificarlo", "error")
+            return redirect(url_for('PanelSocio'))
+
+        # Manejo del archivo
+        if 'nueva_foto' not in request.files:
+            flash('No se ha subido ninguna imagen', 'error')
+            return redirect(url_for('Detalles', carro_id=carro_id))
+        
+        file = request.files['nueva_foto']
+        if file.filename == '':
+            flash('No se seleccionó ningún archivo', 'warning')
+            return redirect(url_for('Detalles', carro_id=carro_id))
+        
+        saved_path = save_car_image(file)
+        if not saved_path:
+            flash('Formato de imagen no válido', 'error')
+            return redirect(url_for('Detalles', carro_id=carro_id))
+
+        # Reemplazar \ por / en la ruta
+        saved_path = saved_path.replace('\\', '/')
+
+        # Agregar imagen al arreglo de fotos del carro
+        fotos_actuales = carro.get('fotos', [])
+        if not isinstance(fotos_actuales, list):
+            fotos_actuales = []
+
+        fotos_actuales.append(saved_path)
+
+        # Actualizar en la base de datos
+        app.db.Carros.update_one(
+            {"idCarro": carro_id},
+            {"$set": {"fotos": fotos_actuales}}
+        )
+
+        flash('Foto agregada exitosamente', 'success')
+        return redirect(url_for('Detalles', carro_id=carro_id))
+
+    except Exception as e:
+        print(f"Error al agregar la foto: {str(e)}")
+        flash("Ocurrió un error al subir la foto", "error")
+        return redirect(url_for('Detalles', carro_id=carro_id))
+    
+
+@app.route('/control/editarCarro/<carro_id>', methods=['POST'])
+@login_required
+@tipo_required('socio')
+def editarCarro(carro_id):
+    try:
+        # Obtener el carro original desde la base de datos
+        carro = app.db.Carros.find_one({'idCarro': carro_id, 'idSocio': current_user.id})
+        if not carro:
+            flash('Carro no encontrado o no tienes permiso para editarlo.', 'error')
+            return redirect('/mis_carros')
+
+        # Obtener los datos del formulario
+        nombre = request.form.get('nombre', carro['nombre'])
+        tipo = request.form.get('tipo', carro['tipo'])
+        año = request.form.get('año', carro['año'])
+        color = request.form.get('color', carro['color'])
+        ubicacion = request.form.get('ubicacion', carro['ubicacion'])
+        precio = request.form.get('precio', carro['precio'])
+
+        # Si hay una nueva imagen, guardarla
+        imagen_path = carro['imagen']
+        if 'imagen' in request.files:
+            file = request.files['imagen']
+            if file and file.filename != '':
+                saved_path = save_car_image(file)
+                if saved_path:
+                    imagen_path = saved_path.replace('\\', '/')
+                else:
+                    flash('Formato de imagen no válido. Se mantiene la imagen anterior.', 'warning')
+
+        # Actualizar en la base de datos
+        app.db.Carros.update_one(
+            {'idCarro': carro_id},
+            {'$set': {
+                'nombre': nombre,
+                'tipo': tipo,
+                'año': año,
+                'color': color,
+                'ubicacion': ubicacion,
+                'precio': precio,
+                'imagen': imagen_path
+            }}
+        )
+
+        flash('Carro actualizado exitosamente.', 'success')
+        return redirect(url_for('Detalles', carro_id=carro_id))
+
+    except Exception as e:
+        print(f'Error al editar el carro: {str(e)}')
+        flash(f'Ocurrió un error al actualizar el carro: {str(e)}', 'error')
+        return redirect('/mis_carros')
+
+
+@app.route('/control/eliminarCarro/<carro_id>', methods=['POST'])
+@login_required
+@tipo_required('socio')
+def eliminarCarro(carro_id):
+    try:
+        resultado = app.db.Carros.delete_one({'idCarro': carro_id, 'idSocio': current_user.id})
+        if resultado.deleted_count == 1:
+            flash('Carro eliminado exitosamente.', 'success')
+        else:
+            flash('No se encontró el carro o no tienes permisos.', 'error')
+    except Exception as e:
+        flash(f'Error al eliminar el carro: {str(e)}', 'error')
+    
+    return redirect('/mis_carros')
 
 
 
