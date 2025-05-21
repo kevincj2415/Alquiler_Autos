@@ -1,0 +1,13 @@
+[flake8]
+max-line-length = 120
+exclude = .git,__pycache__,build,dist
+per-file-ignores =
+    # Ignorar importaciones no usadas en __init__.py
+    __init__.py:F401
+ignore =
+    # Ignorar espacios antes de :
+    E203
+    # Ignorar línea en blanco después de docstring
+    D202
+    # Ignorar docstring en __init__
+    D107

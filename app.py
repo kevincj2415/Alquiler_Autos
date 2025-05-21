@@ -1,4 +1,6 @@
 from flask import Flask, jsonify, render_template, request, redirect, url_for, flash, session, send_file
+from cache_config import init_cache
+from logger_config import setup_logger
 from werkzeug.utils import secure_filename
 import os
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -23,6 +25,12 @@ BASE_URL = "https://api.pexels.com/v1/search"
 
 app = Flask(__name__, template_folder='frontend/templates', static_folder='frontend/static')
 app.config.from_object(Config)
+
+# Inicializar cache
+cache = init_cache(app)
+
+# Configurar logger
+logger = setup_logger(app)
 
 # Configuración para subida de archivos
 UPLOAD_FOLDER = os.path.join('frontend', 'static', 'uploads', 'cars')
@@ -53,6 +61,13 @@ login_manager.login_view = 'sesion'
 # Conexión a MongoDB usando la configuración
 cliente = MongoClient(app.config['MONGODB_URI'])
 app.db = cliente.alquiler_coches
+
+# Crear índices para optimizar búsquedas
+app.db.Users.create_index('correo', unique=True)
+app.db.Users.create_index('idc', unique=True)
+app.db.Socios.create_index('correo', unique=True)
+app.db.Socios.create_index('idc', unique=True)
+app.db.Socios.create_index('numero_documento', unique=True)
 
 # Clase para manejar usuarios en Flask-Login
 class User(UserMixin):
@@ -85,6 +100,7 @@ def tipo_required(tipo):
 app.jinja_env.globals.update(generar_codigo_seguro=generar_codigo_seguro)
 
 @app.route('/')
+@cache.cached(timeout=300)  # Cache por 5 minutos
 def inicio():
     return render_template('sitio/Inicio.html', status={
         'secionIniciada': current_user.is_authenticated,
