@@ -11,7 +11,7 @@
 
 1. Clonar el repositorio:
 ```bash
-git clone <[url-del-repositorio](https://github.com/kevincj2415/Alquiler_Autos)>
+git clone <https://github.com/kevincj2415/Alquiler_Autos>
 cd mi-alquiler-autos
 ```
 
