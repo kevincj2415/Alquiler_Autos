@@ -58,7 +58,10 @@ login_manager.init_app(app)
 login_manager.login_view = 'sesion'
 
 # Conexión a MongoDB usando la configuración
-cliente = MongoClient('MONGODB_URI')
+mongo_uri = os.getenv('MONGODB_URI')
+cliente = MongoClient(mongo_uri)
+
+# Seleccionar base de datos
 app.db = cliente.alquiler_coches
 
 # Crear índices para optimizar búsquedas
