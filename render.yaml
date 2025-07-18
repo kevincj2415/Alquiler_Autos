@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: flask-todo
+    env: python
+    buildCommand: ""
+    startCommand: gunicorn app:app
+    envVars:
+      - key: SECRET_KEY
+        value: kevin_jairo
+      - key: MONGODB_URI
+        value: mongodb+srv://kevincj2415:e2BhakVv76vBMD7f@cluster0.hb2dv.mongodb.net/
+      - key: PIXABAY_API_KEY
+        value: 47289007-1c84d3d414f613c857c6ded8f
+    staticPublishPath: frontend/static
+    staticRoutes:
+      - src: /static
+        dest: /static

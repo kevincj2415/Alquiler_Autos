@@ -9,7 +9,6 @@ from pymongo import MongoClient
 from functools import wraps
 from Usuario import Usuario
 from Socio import Socio
-from config import Config
 import datetime
 import io
 from reportlab.lib.pagesizes import letter
@@ -24,7 +23,7 @@ def generar_codigo_seguro(longitud=6):
 BASE_URL = "https://api.pexels.com/v1/search"
 
 app = Flask(__name__, template_folder='frontend/templates', static_folder='frontend/static')
-app.config.from_object(Config)
+
 
 # Inicializar cache
 cache = init_cache(app)
