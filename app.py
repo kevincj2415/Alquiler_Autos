@@ -1,20 +1,26 @@
-from flask import Flask, jsonify, render_template, request, redirect, url_for, flash, session, send_file
-from cache_config import init_cache
-from logger_config import setup_logger
-from werkzeug.utils import secure_filename
 import os
-from werkzeug.security import generate_password_hash, check_password_hash
+import io
+import string
+import secrets
+import datetime
+
+from flask import Flask, jsonify, render_template, request, redirect, url_for, flash, session, send_file
 from flask_login import LoginManager, UserMixin, login_user, current_user, logout_user, login_required
+from werkzeug.utils import secure_filename
+from werkzeug.security import generate_password_hash, check_password_hash
+
 from pymongo import MongoClient
 from functools import wraps
+
+from cache_config import init_cache
+from logger_config import setup_logger
+
 from Usuario import Usuario
 from Socio import Socio
-import datetime
-import io
+from config import Config
+
 from reportlab.lib.pagesizes import letter
 from reportlab.pdfgen import canvas
-import secrets
-import string
 
 def generar_codigo_seguro(longitud=6):
     caracteres = string.ascii_letters + string.digits
@@ -23,7 +29,7 @@ def generar_codigo_seguro(longitud=6):
 BASE_URL = "https://api.pexels.com/v1/search"
 
 app = Flask(__name__, template_folder='frontend/templates', static_folder='frontend/static')
-
+app.config.from_object(Config)
 
 # Inicializar cache
 cache = init_cache(app)
